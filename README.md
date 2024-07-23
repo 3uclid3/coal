@@ -27,7 +27,7 @@ constexpr size_t size(size_t s)
 
 using allocator_t = ca::segregator_allocator<
         ca::slab_allocator<ca::malloc_allocator, 2048, 8, 16, 32, 64, 128, 512, 1024>,
-        ca::free_list_allocator<ca::prefixed_size_allocator<ca::malloc_allocator>, ca::limited_size_free_list_strategy<ca::best_fit_free_list_strategy, 64>>,
+        ca::free_list_allocator<ca::prefixed_size_allocator<ca::malloc_allocator>, ca::free_list_strategy::limited_size<ca::free_list_strategy::best_fit, 64>>,
         1024>>;
 
 allocator_t allocator;
