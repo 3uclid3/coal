@@ -5,10 +5,15 @@
       push:
     
     jobs:
-      test:
-        name: Test
+      tests:
+        name: Tests
         runs-on: ubuntu-24.04
     
+        strategy:
+            fail-fast: false
+            matrix:
+              buildtype: [debug, release]
+
         steps:
           - name: Install dependencies
             run: |
@@ -16,20 +21,91 @@
               export DEBIAN_FRONTEND=noninteractive
               sudo apt-get install -y --no-install-recommends software-properties-common apt-utils ccache clang lld llvm python3 python3-pip pipx
               pipx install ninja
-    
+
           - name: Check out repository code
             uses: actions/checkout@v4
-    
+
           - name: Install xmake
             uses: xmake-io/github-action-setup-xmake@v1
             with:
               xmake-version: 'latest'
               actions-cache-folder: '.xmake-cache'
-    
+
           - name: Build
             run: |
-              xmake f -y
+              xmake f -y -m ${{ matrix.buildtype }}
 
-          - name: Test
+          - name: Tests
             run: |
               xmake test
+
+      sanitizers:
+        name: Sanitizers
+        runs-on: ubuntu-24.04
+        needs: tests
+    
+        strategy:
+            fail-fast: false
+            matrix:
+              sanitizer: [asan, ubsan]
+
+        steps:
+          - name: Install dependencies
+            run: |
+              sudo apt-get update -qq
+              export DEBIAN_FRONTEND=noninteractive
+              sudo apt-get install -y --no-install-recommends software-properties-common apt-utils ccache clang lld llvm python3 python3-pip pipx
+              pipx install ninja
+
+          - name: Check out repository code
+            uses: actions/checkout@v4
+
+          - name: Install xmake
+            uses: xmake-io/github-action-setup-xmake@v1
+            with:
+              xmake-version: 'latest'
+              actions-cache-folder: '.xmake-cache'
+
+          - name: Build
+            run: |
+              xmake f -y -m debug -m ${{ matrix.sanitizer }}
+
+          - name: Tests
+            run: |
+              xmake test
+
+      coverage:
+        name: Coverage
+        runs-on: ubuntu-24.04
+        needs: tests
+    
+        steps:
+          - name: Install dependencies
+            run: |
+              sudo apt-get update -qq
+              export DEBIAN_FRONTEND=noninteractive
+              sudo apt-get install -y --no-install-recommends software-properties-common apt-utils ccache clang lld llvm lcov python3 python3-pip pipx
+              pipx install ninja
+
+          - name: Check out repository code
+            uses: actions/checkout@v4
+
+          - name: Install xmake
+            uses: xmake-io/github-action-setup-xmake@v1
+            with:
+              xmake-version: 'latest'
+              actions-cache-folder: '.xmake-cache'
+
+          - name: Build
+            run: |
+              xmake f -y -m debug -m coverage
+
+          - name: Tests
+            run: |
+              xmake test
+
+          - name: Upload coverage reports to Codecov
+            uses: codecov/codecov-action@v4
+            with:
+              token: ${{ secrets.CODECOV_TOKEN }}
+              flags: unittests
