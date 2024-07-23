@@ -20,4 +20,4 @@ target("test")
     add_packages("catch2", "hedley")
 
     add_includedirs("include", "tests")
-    add_files("tests/*.cpp")
+    add_files("tests/**.cpp")

@@ -2,8 +2,6 @@
 
 #include <cassert>
 
-#include <hedley.h>
-
 #include <ca/def.hpp>
 #include <ca/memory_block.hpp>
 
@@ -15,7 +13,7 @@ public:
     static constexpr std::size_t alignment = 64 * 1024;
 
 public:
-    constexpr std::size_t get_alignment() const;
+    HEDLEY_WARN_UNUSED_RESULT constexpr std::size_t get_alignment() const;
 
     HEDLEY_WARN_UNUSED_RESULT constexpr memory_block allocate(std::size_t size);
     HEDLEY_WARN_UNUSED_RESULT constexpr bool owns(const memory_block& block) const;

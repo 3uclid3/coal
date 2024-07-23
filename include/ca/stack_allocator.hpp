@@ -1,8 +1,7 @@
 #pragma once
 
-#include <hedley.h>
-
 #include <ca/alignment.hpp>
+#include <ca/def.hpp>
 #include <ca/details/allocator_reallocation.hpp>
 #include <ca/memory_block.hpp>
 

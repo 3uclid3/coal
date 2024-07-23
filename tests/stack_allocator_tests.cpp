@@ -12,19 +12,19 @@ using stack_allocator_types = std::tuple<
     stack_allocator<0x1000, 8>,
     stack_allocator<0x1000, 16>>;
 
-TEMPLATE_LIST_TEST_CASE_METHOD(basic_allocator_fixture, "stack_allocator basics", "[stack_allocator]", stack_allocator_types)
+TEMPLATE_LIST_TEST_CASE_METHOD(basic_allocator_fixture, "stack_allocator basics", "[stack_allocator], [allocator]", stack_allocator_types)
 {
     this->test_basics();
 }
 
-TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator allocate returns nullblk when allocating 0 byte", "[stack_allocator]", stack_allocator_types)
+TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator allocate returns nullblk when allocating 0 byte", "[stack_allocator], [allocator]", stack_allocator_types)
 {
     memory_block block = this->allocator.allocate(0);
 
     CHECK(block == nullblk);
 }
 
-TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator allocate returns size", "[stack_allocator]", stack_allocator_types)
+TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator allocate returns size", "[stack_allocator], [allocator]", stack_allocator_types)
 {
     memory_block block0 = this->allocator.allocate(1);
     memory_block block1 = this->allocator.allocate(TestType::alignment + 1);
@@ -39,7 +39,7 @@ TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator allocate retu
     this->deallocate_and_check_is_nullblk(block1);
 }
 
-TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator allocate can allocate all stack", "[stack_allocator]", stack_allocator_types)
+TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator allocate can allocate all stack", "[stack_allocator], [allocator]", stack_allocator_types)
 {
     memory_block block = this->allocator.allocate(TestType::max_size);
 
@@ -49,7 +49,7 @@ TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator allocate can 
     this->deallocate_and_check_is_nullblk(block);
 }
 
-TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator allocate returns nullblk when request size is > available size", "[stack_allocator]", stack_allocator_types)
+TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator allocate returns nullblk when request size is > available size", "[stack_allocator], [allocator]", stack_allocator_types)
 {
     memory_block block = this->allocator.allocate(TestType::max_size + 1);
     CHECK(block == nullblk);
@@ -63,7 +63,7 @@ TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator allocate retu
     this->deallocate_and_check_is_nullblk(block);
 }
 
-TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator allocate returns nullblk when out of memory", "[stack_allocator]", stack_allocator_types)
+TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator allocate returns nullblk when out of memory", "[stack_allocator], [allocator]", stack_allocator_types)
 {
     memory_block block = this->allocator.allocate(TestType::max_size);
     REQUIRE(block != nullblk);
@@ -74,7 +74,7 @@ TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator allocate retu
     this->deallocate_and_check_is_nullblk(block);
 }
 
-TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator allocate reuse last deallocated if it was the most recent allocation", "[stack_allocator]", stack_allocator_types)
+TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator allocate reuse last deallocated if it was the most recent allocation", "[stack_allocator], [allocator]", stack_allocator_types)
 {
     memory_block block0 = this->allocator.allocate(8);
     memory_block block1 = this->allocator.allocate(8);
@@ -89,7 +89,7 @@ TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator allocate reus
     this->deallocate_and_check_is_nullblk(block2);
 }
 
-TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator allocate dot no reuse last deallocated if it was not the most recent allocation", "[stack_allocator]", stack_allocator_types)
+TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator allocate dot no reuse last deallocated if it was not the most recent allocation", "[stack_allocator], [allocator]", stack_allocator_types)
 {
     memory_block block0 = this->allocator.allocate(8);
     memory_block block1 = this->allocator.allocate(8);
@@ -104,7 +104,7 @@ TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator allocate dot 
     this->deallocate_and_check_is_nullblk(block2);
 }
 
-TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator reallocate increase current allocation if its the most recent allocation", "[stack_allocator]", stack_allocator_types)
+TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator reallocate increase current allocation if its the most recent allocation", "[stack_allocator], [allocator]", stack_allocator_types)
 {
     memory_block block = this->allocator.allocate(4);
     *static_cast<std::uint32_t*>(block.ptr) = 42;
@@ -119,7 +119,7 @@ TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator reallocate in
     this->deallocate_and_check_is_nullblk(block);
 }
 
-TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator reallocate allocate a new block if its not the most recent allocation", "[stack_allocator]", stack_allocator_types)
+TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator reallocate allocate a new block if its not the most recent allocation", "[stack_allocator], [allocator]", stack_allocator_types)
 {
     memory_block block = this->allocator.allocate(TestType::alignment);
     *static_cast<std::uint32_t*>(block.ptr) = 42;
@@ -139,7 +139,7 @@ TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator reallocate al
     this->deallocate_and_check_is_nullblk(second_block);
 }
 
-TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator reallocate fail when out of memory", "[stack_allocator]", stack_allocator_types)
+TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator reallocate fail when out of memory", "[stack_allocator], [allocator]", stack_allocator_types)
 {
     memory_block block = this->allocator.allocate(TestType::max_size);
 
@@ -151,7 +151,7 @@ TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator reallocate fa
     this->deallocate_and_check_is_nullblk(block);
 }
 
-TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator reallocate decrease current allocation if its the most recent allocation", "[stack_allocator]", stack_allocator_types)
+TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator reallocate decrease current allocation if its the most recent allocation", "[stack_allocator], [allocator]", stack_allocator_types)
 {
     memory_block block = this->allocator.allocate(8);
     *static_cast<std::uint32_t*>(block.ptr) = 42;
@@ -166,7 +166,7 @@ TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator reallocate de
     this->deallocate_and_check_is_nullblk(block);
 }
 
-TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator reallocate decrease current allocation if its not the most recent allocation", "[stack_allocator]", stack_allocator_types)
+TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator reallocate decrease current allocation if its not the most recent allocation", "[stack_allocator], [allocator]", stack_allocator_types)
 {
     memory_block block = this->allocator.allocate(8);
     *static_cast<std::uint32_t*>(block.ptr) = 42;
@@ -186,14 +186,14 @@ TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator reallocate de
     this->deallocate_and_check_is_nullblk(second_block);
 }
 
-TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator expand nullblk by 0 returns true", "[stack_allocator]", stack_allocator_types)
+TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator expand nullblk by 0 returns true", "[stack_allocator], [allocator]", stack_allocator_types)
 {
     memory_block block = nullblk;
     CHECK(this->allocator.expand(block, 0));
     CHECK(block == nullblk);
 }
 
-TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator expand by 0 returns same block", "[stack_allocator]", stack_allocator_types)
+TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator expand by 0 returns same block", "[stack_allocator], [allocator]", stack_allocator_types)
 {
     memory_block block = this->allocator.allocate(8);
     memory_block pre_expand_block = block;
@@ -204,7 +204,7 @@ TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator expand by 0 r
     this->deallocate_and_check_is_nullblk(block);
 }
 
-TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator expand nullblk by non-zero allocate a new block", "[stack_allocator]", stack_allocator_types)
+TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator expand nullblk by non-zero allocate a new block", "[stack_allocator], [allocator]", stack_allocator_types)
 {
     memory_block block = nullblk;
     CHECK(this->allocator.expand(block, 4));
@@ -212,7 +212,7 @@ TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator expand nullbl
     CHECK(block.size == 4);
 }
 
-TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator expand over capacity returns false", "[stack_allocator]", stack_allocator_types)
+TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator expand over capacity returns false", "[stack_allocator], [allocator]", stack_allocator_types)
 {
     memory_block block = nullblk;
     CHECK_FALSE(this->allocator.expand(block, TestType::max_size + 1));

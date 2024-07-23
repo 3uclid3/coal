@@ -3,9 +3,11 @@
 #include <concepts>
 #include <type_traits>
 
+#include <ca/def.hpp>
+
 namespace ca {
 
-inline static constexpr std::size_t default_alignment{8};
+inline static constexpr std::size_t default_alignment{CA_DEFAULT_ALIGNMENT};
 
 constexpr std::size_t round_to_alignment(std::size_t size, std::size_t align)
 {

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <catch2/catch_test_macros.hpp>
-
 #include <vector>
+
+#include <catch2/catch_test_macros.hpp>
 
 #include <ca/alignment.hpp>
 #include <ca/allocator_traits.hpp>
@@ -60,15 +60,6 @@ struct scope_memory_block : memory_block
 };
 
 template<typename AllocatorT>
-struct allocator_wrapper : AllocatorT
-{
-    scope_memory_block<allocator_wrapper<AllocatorT>> scope_allocate(size_t size)
-    {
-        return {AllocatorT::allocate(size), this};
-    }
-};
-
-template<typename AllocatorT>
 struct allocator_fixture
 {
     void deallocate_and_check_is_nullblk(memory_block& block)
@@ -77,13 +68,18 @@ struct allocator_fixture
         CHECK(block == nullblk);
     }
 
-    allocator_wrapper<AllocatorT> allocator;
+    AllocatorT allocator;
 };
 
 template<typename AllocatorT>
 struct basic_allocator_fixture
 {
-    using scope_memory_block_t = scope_memory_block<allocator_wrapper<AllocatorT>>;
+    using scope_memory_block_t = scope_memory_block<AllocatorT>;
+
+    scope_memory_block<AllocatorT> scope_allocate(std::size_t size)
+    {
+        return {allocator.allocate(size), &allocator};
+    }
 
     void test_basic_allocate()
     {
@@ -91,14 +87,14 @@ struct basic_allocator_fixture
         {
             SECTION("allocate size 0 return nullblk")
             {
-                scope_memory_block_t block = allocator.scope_allocate(0);
+                scope_memory_block_t block = scope_allocate(0);
 
                 CHECK(block == nullblk);
             }
 
             SECTION("allocate size smaller than alignment")
             {
-                scope_memory_block_t block = allocator.scope_allocate(allocator.get_alignment() - 1);
+                scope_memory_block_t block = scope_allocate(allocator.get_alignment() - 1);
 
                 CHECK(block.ptr != nullptr);
                 CHECK(block.size == allocator.get_alignment() - 1);
@@ -106,7 +102,7 @@ struct basic_allocator_fixture
 
             SECTION("allocate size of alignment")
             {
-                scope_memory_block_t block = allocator.scope_allocate(allocator.get_alignment());
+                scope_memory_block_t block = scope_allocate(allocator.get_alignment());
 
                 CHECK(block.ptr != nullptr);
                 CHECK(block.size == allocator.get_alignment());
@@ -114,7 +110,7 @@ struct basic_allocator_fixture
 
             SECTION("allocate size bigger than alignment")
             {
-                scope_memory_block_t block = allocator.scope_allocate(allocator.get_alignment() + 1);
+                scope_memory_block_t block = scope_allocate(allocator.get_alignment() + 1);
 
                 CHECK(block.ptr != nullptr);
                 CHECK(block.size == allocator.get_alignment() + 1);
@@ -137,7 +133,7 @@ struct basic_allocator_fixture
                 {
                     SECTION("expand size 0 does nothing")
                     {
-                        scope_memory_block_t block = allocator.scope_allocate(aligned_size);
+                        scope_memory_block_t block = scope_allocate(aligned_size);
 
                         CHECK(allocator.expand(block, 0));
                         CHECK(block.ptr != nullptr);
@@ -163,7 +159,7 @@ struct basic_allocator_fixture
 
                     SECTION("expand size smaller than alignment to alignment")
                     {
-                        scope_memory_block_t block = allocator.scope_allocate(allocator.get_alignment() - 1);
+                        scope_memory_block_t block = scope_allocate(allocator.get_alignment() - 1);
 
                         CHECK(allocator.expand(block, 1));
                         CHECK(block.ptr != nullptr);
@@ -172,7 +168,7 @@ struct basic_allocator_fixture
 
                     SECTION("expand size bigger than alignment to double alignment")
                     {
-                        scope_memory_block_t block = allocator.scope_allocate(allocator.get_alignment() + 1);
+                        scope_memory_block_t block = scope_allocate(allocator.get_alignment() + 1);
 
                         CHECK(allocator.expand(block, allocator.get_alignment() - 1));
                         CHECK(block.ptr != nullptr);
@@ -186,10 +182,10 @@ struct basic_allocator_fixture
                     {
                         memory_block block = nullblk;
 
-                        for (size_t i = 0; i < 10; ++i)
+                        for (std::size_t i = 0; i < 10; ++i)
                         {
-                            const size_t size = i % 2 ? unaligned_size : round_to_alignment(block.size + unaligned_size, allocator.get_alignment()) - block.size;
-                            const size_t expected_size = block.size + size;
+                            const std::size_t size = i % 2 ? unaligned_size : round_to_alignment(block.size + unaligned_size, allocator.get_alignment()) - block.size;
+                            const std::size_t expected_size = block.size + size;
 
                             INFO("expand #" << i << " size " << size);
 
@@ -209,7 +205,7 @@ struct basic_allocator_fixture
         {
             SECTION("reallocate size 0 deallocate")
             {
-                scope_memory_block_t block = allocator.scope_allocate(aligned_size);
+                scope_memory_block_t block = scope_allocate(aligned_size);
 
                 CHECK(allocator.reallocate(block, 0));
                 CHECK(block == nullblk);
@@ -234,7 +230,7 @@ struct basic_allocator_fixture
 
             SECTION("reallocate size smaller than alignment to alignment")
             {
-                scope_memory_block_t block = allocator.scope_allocate(allocator.get_alignment() - 1);
+                scope_memory_block_t block = scope_allocate(allocator.get_alignment() - 1);
 
                 CHECK(allocator.reallocate(block, allocator.get_alignment()));
                 CHECK(block.ptr != nullptr);
@@ -243,7 +239,7 @@ struct basic_allocator_fixture
 
             SECTION("reallocate size bigger than alignment to double alignment")
             {
-                scope_memory_block_t block = allocator.scope_allocate(allocator.get_alignment() + 1);
+                scope_memory_block_t block = scope_allocate(allocator.get_alignment() + 1);
 
                 CHECK(allocator.reallocate(block, allocator.get_alignment() * 2));
                 CHECK(block.ptr != nullptr);
@@ -254,8 +250,8 @@ struct basic_allocator_fixture
             {
                 memory_block block = nullblk;
 
-                size_t size = 0;
-                for (size_t i = 0; i < 10; ++i)
+                std::size_t size = 0;
+                for (std::size_t i = 0; i < 10; ++i)
                 {
                     size += unaligned_size;
 
@@ -298,7 +294,7 @@ struct basic_allocator_fixture
         {
             SECTION("deallocate_all")
             {
-                for (size_t i = 0; i < 10; ++i)
+                for (std::size_t i = 0; i < 10; ++i)
                 {
                     memory_block block = allocator.allocate(aligned_size);
                     CA_UNUSED(block);
@@ -318,9 +314,9 @@ struct basic_allocator_fixture
             allocated_blocks.reserve(70);
 
             INFO("allocate 50 blocks");
-            for (size_t i = 0; i < 50; ++i)
+            for (std::size_t i = 0; i < 50; ++i)
             {
-                const size_t size = i % 2 ? unaligned_size : aligned_size;
+                const std::size_t size = i % 2 ? unaligned_size : aligned_size;
                 allocated_blocks.emplace_back(allocator.allocate(size));
 
                 CHECK(allocated_blocks.back().ptr != nullptr);
@@ -328,16 +324,16 @@ struct basic_allocator_fixture
             }
 
             INFO("deallocate 5 blocks");
-            for (size_t i = 45; i < 50; ++i)
+            for (std::size_t i = 45; i < 50; ++i)
             {
                 deallocate_and_check_is_nullblk(allocated_blocks[i]);
             }
             allocated_blocks.resize(45);
 
             INFO("allocate and expand 10 blocks");
-            for (size_t i = 0; i < 10; ++i)
+            for (std::size_t i = 0; i < 10; ++i)
             {
-                const size_t size = i % 2 ? unaligned_size : aligned_size;
+                const std::size_t size = i % 2 ? unaligned_size : aligned_size;
                 allocated_blocks.emplace_back(allocator.allocate(size));
 
                 CHECK(allocated_blocks.back().ptr != nullptr);
@@ -350,9 +346,9 @@ struct basic_allocator_fixture
             }
 
             INFO("allocate and reallocate 10 blocks");
-            for (size_t i = 0; i < 10; ++i)
+            for (std::size_t i = 0; i < 10; ++i)
             {
-                const size_t size = i % 2 ? unaligned_size : aligned_size;
+                const std::size_t size = i % 2 ? unaligned_size : aligned_size;
                 allocated_blocks.emplace_back(allocator.allocate(size));
 
                 CHECK(allocated_blocks.back().ptr != nullptr);
@@ -365,7 +361,7 @@ struct basic_allocator_fixture
             }
 
             INFO("deallocate 10 blocks in reverse order");
-            for (size_t i = 0; i < 10; ++i)
+            for (std::size_t i = 0; i < 10; ++i)
             {
                 deallocate_and_check_is_nullblk(allocated_blocks.back());
                 allocated_blocks.pop_back();
@@ -402,11 +398,11 @@ struct basic_allocator_fixture
         CHECK_FALSE(block);
     }
 
-    allocator_wrapper<AllocatorT> allocator;
+    AllocatorT allocator;
 
     // "random" size for testing
-    size_t aligned_size = 42;
-    size_t unaligned_size = 42;
+    std::size_t aligned_size = 42;
+    std::size_t unaligned_size = 42;
 
     bool small_expand = true;
     bool large_expand = true;

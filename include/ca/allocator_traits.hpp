@@ -38,7 +38,7 @@ struct memory_block;
 namespace ca::allocator_traits {
 
 CA_TYPE_TRAIT_HAS_METHOD_CONST(has_owns, owns, bool, const memory_block&);
-CA_TYPE_TRAIT_HAS_METHOD(has_expand, expand, bool, memory_block&, size_t);
+CA_TYPE_TRAIT_HAS_METHOD(has_expand, expand, bool, memory_block&, std::size_t);
 CA_TYPE_TRAIT_HAS_METHOD(has_deallocate_all, deallocate_all, void);
 
 } // namespace ca::allocator_traits

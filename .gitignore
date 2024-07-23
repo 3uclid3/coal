@@ -3,6 +3,7 @@
 .vs/*
 .vscode/*
 !.vscode/launch.json
+!.vscode/tasks.json
 
 # build
 .xmake/*
