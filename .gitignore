@@ -1,0 +1,9 @@
+# ide
+.idea/*
+.vs/*
+.vscode/*
+!.vscode/launch.json
+
+# build
+.xmake/*
+build/*
