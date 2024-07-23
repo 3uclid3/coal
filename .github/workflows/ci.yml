@@ -12,6 +12,7 @@
         strategy:
             fail-fast: false
             matrix:
+              compiler: [gcc, clang]
               buildtype: [debug, release]
 
         steps:
@@ -33,7 +34,7 @@
 
           - name: Build
             run: |
-              xmake f -y -m ${{ matrix.buildtype }}
+              xmake f -y -m ${{ matrix.buildtype }} --toolchain=${{ matrix.compiler }}
 
           - name: Tests
             run: |
@@ -68,7 +69,7 @@
 
           - name: Build
             run: |
-              xmake f -y -m debug --policies=build.sanitizer.${{ matrix.sanitizer }}
+              xmake f -y -m debug --toolchain=clang --policies=build.sanitizer.${{ matrix.sanitizer }}
 
           - name: Tests
             run: |
@@ -78,6 +79,11 @@
         name: Coverage
         runs-on: ubuntu-24.04
         needs: tests
+
+        strategy:
+            fail-fast: false
+            matrix:
+              compiler: [gcc, clang]
     
         steps:
           - name: Install dependencies
@@ -98,7 +104,7 @@
 
           - name: Build
             run: |
-              xmake f -y -m debug -m coverage
+              xmake f -y -m debug -m coverage --toolchain=${{ matrix.compiler }}
 
           - name: Tests
             run: |
