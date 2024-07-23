@@ -1,0 +1,26 @@
+---
+ignore:
+  - "build/**"
+  - "tests/**"
+  - "/usr*" # Exclude system headers
+
+comment:
+  layout: "diff,flags,tree,betaprofiling"
+  show_critical_paths: true
+
+coverage:
+  status:
+    project:
+      default:
+        target: 85%
+        threshold: 10%
+        base: auto
+        paths:
+          - "include/"
+    patch:
+      default:
+        target: 85%
+        threshold: 10%
+        base: auto
+        paths:
+          - "include/"

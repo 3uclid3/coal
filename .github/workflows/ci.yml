@@ -47,7 +47,7 @@
         strategy:
             fail-fast: false
             matrix:
-              sanitizer: [asan, ubsan]
+              sanitizer: [address, undefined]
 
         steps:
           - name: Install dependencies
@@ -68,7 +68,7 @@
 
           - name: Build
             run: |
-              xmake f -y -m debug -m ${{ matrix.sanitizer }}
+              xmake f -y -m debug --policies=build.sanitizer.${{ matrix.sanitizer }}
 
           - name: Tests
             run: |

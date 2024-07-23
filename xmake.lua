@@ -8,8 +8,7 @@ add_rules("plugin.compile_commands.autoupdate", { outputdir = "$(buildir)" })
 set_languages("c++20")
 
 add_rules("mode.debug", "mode.release",
-          "mode.coverage",
-          "mode.asan", "mode.ubsan")
+          "mode.coverage")
 
 add_requires("catch2 3.x", "hedley 15", { system = false })
 
