@@ -13,9 +13,9 @@ struct assert_memory_corruption_reporter
     static void report(const void* corrupted_ptr, T expected, T actual)
     {
         assert(expected == actual);
-        CA_UNUSED(corrupted_ptr);
-        CA_UNUSED(expected);
-        CA_UNUSED(actual);
+        COAL_UNUSED(corrupted_ptr);
+        COAL_UNUSED(expected);
+        COAL_UNUSED(actual);
     }
 };
 

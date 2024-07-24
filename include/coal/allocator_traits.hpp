@@ -2,7 +2,7 @@
 
 #include <coal/memory_block.hpp>
 
-#define _CA_TYPE_TRAIT_HAS_METHOD_IMPL(name, method_name, return_type, suffix, ...) \
+#define _COAL_TYPE_TRAIT_HAS_METHOD_IMPL(name, method_name, return_type, suffix, ...) \
     namespace impl { \
     template<typename T> \
     struct name \
@@ -25,11 +25,11 @@
     template<typename T> \
     inline static constexpr bool name = impl::name<T>::value
 
-#define CA_TYPE_TRAIT_HAS_METHOD(name, method_name, return_type, ...) \
-    _CA_TYPE_TRAIT_HAS_METHOD_IMPL(name, method_name, return_type, , __VA_ARGS__)
+#define COAL_TYPE_TRAIT_HAS_METHOD(name, method_name, return_type, ...) \
+    _COAL_TYPE_TRAIT_HAS_METHOD_IMPL(name, method_name, return_type, , __VA_ARGS__)
 
-#define CA_TYPE_TRAIT_HAS_METHOD_CONST(name, method_name, return_type, ...) \
-    _CA_TYPE_TRAIT_HAS_METHOD_IMPL(name, method_name, return_type, const, __VA_ARGS__)
+#define COAL_TYPE_TRAIT_HAS_METHOD_CONST(name, method_name, return_type, ...) \
+    _COAL_TYPE_TRAIT_HAS_METHOD_IMPL(name, method_name, return_type, const, __VA_ARGS__)
 
 namespace coal {
 struct memory_block;
@@ -37,8 +37,8 @@ struct memory_block;
 
 namespace coal::allocator_traits {
 
-CA_TYPE_TRAIT_HAS_METHOD_CONST(has_owns, owns, bool, const memory_block&);
-CA_TYPE_TRAIT_HAS_METHOD(has_expand, expand, bool, memory_block&, std::size_t);
-CA_TYPE_TRAIT_HAS_METHOD(has_deallocate_all, deallocate_all, void);
+COAL_TYPE_TRAIT_HAS_METHOD_CONST(has_owns, owns, bool, const memory_block&);
+COAL_TYPE_TRAIT_HAS_METHOD(has_expand, expand, bool, memory_block&, std::size_t);
+COAL_TYPE_TRAIT_HAS_METHOD(has_deallocate_all, deallocate_all, void);
 
 } // namespace coal::allocator_traits

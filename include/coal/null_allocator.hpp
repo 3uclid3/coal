@@ -31,7 +31,7 @@ constexpr std::size_t null_allocator::get_alignment() const
 
 constexpr memory_block null_allocator::allocate(std::size_t size)
 {
-    CA_UNUSED(size);
+    COAL_UNUSED(size);
 
     return nullblk;
 }
@@ -43,8 +43,8 @@ constexpr bool null_allocator::owns(const memory_block& block) const
 
 constexpr bool null_allocator::expand(memory_block& block, std::size_t delta)
 {
-    CA_UNUSED(block);
-    CA_UNUSED(delta);
+    COAL_UNUSED(block);
+    COAL_UNUSED(delta);
 
     assert(!block);
     return false;
@@ -52,8 +52,8 @@ constexpr bool null_allocator::expand(memory_block& block, std::size_t delta)
 
 constexpr bool null_allocator::reallocate(memory_block& block, std::size_t new_size)
 {
-    CA_UNUSED(block);
-    CA_UNUSED(new_size);
+    COAL_UNUSED(block);
+    COAL_UNUSED(new_size);
 
     assert(!block);
     return false;
@@ -61,7 +61,7 @@ constexpr bool null_allocator::reallocate(memory_block& block, std::size_t new_s
 
 constexpr void null_allocator::deallocate(memory_block& block)
 {
-    CA_UNUSED(block);
+    COAL_UNUSED(block);
 
     assert(!block);
 }

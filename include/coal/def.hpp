@@ -2,8 +2,8 @@
 
 #include <hedley/hedley.h>
 
-#define CA_UNUSED(x) (void)(x)
+#define COAL_UNUSED(x) (void)(x)
 
-#ifndef CA_DEFAULT_ALIGNMENT
-#define CA_DEFAULT_ALIGNMENT 8
+#ifndef COAL_DEFAULT_ALIGNMENT
+#define COAL_DEFAULT_ALIGNMENT 8
 #endif

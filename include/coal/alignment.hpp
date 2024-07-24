@@ -7,7 +7,7 @@
 
 namespace coal {
 
-inline static constexpr std::size_t default_alignment{CA_DEFAULT_ALIGNMENT};
+inline static constexpr std::size_t default_alignment{COAL_DEFAULT_ALIGNMENT};
 
 constexpr auto align_down(std::integral auto n, std::integral auto a)
 {

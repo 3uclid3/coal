@@ -33,7 +33,7 @@ TEST_CASE("memory_corruption_detector does not report if no corruption", "[memor
 {
     {
         test_detector detector;
-        CA_UNUSED(detector);
+        COAL_UNUSED(detector);
     }
 
     CHECK_FALSE(memory_corruption_reporter::has_reported);

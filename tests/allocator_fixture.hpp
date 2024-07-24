@@ -297,7 +297,7 @@ struct basic_allocator_fixture
                 for (std::size_t i = 0; i < 10; ++i)
                 {
                     memory_block block = allocator.allocate(aligned_size);
-                    CA_UNUSED(block);
+                    COAL_UNUSED(block);
                 }
 
                 allocator.deallocate_all();

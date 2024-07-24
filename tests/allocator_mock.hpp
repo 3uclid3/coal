@@ -18,7 +18,7 @@ struct basic_minimal_allocator
 
     HEDLEY_WARN_UNUSED_RESULT memory_block allocate(std::size_t size)
     {
-        CA_UNUSED(size);
+        COAL_UNUSED(size);
         if (!will_allocate)
         {
             return nullblk;
@@ -30,7 +30,7 @@ struct basic_minimal_allocator
 
     bool reallocate(memory_block& block, std::size_t new_size)
     {
-        CA_UNUSED(new_size);
+        COAL_UNUSED(new_size);
         if (will_reallocate)
         {
             block = reallocate_block;
@@ -77,14 +77,14 @@ struct basic_allocator : basic_minimal_allocator<basic_allocator<TagT>>
 
     HEDLEY_WARN_UNUSED_RESULT bool owns(const memory_block& block) const
     {
-        CA_UNUSED(block);
+        COAL_UNUSED(block);
         ++owns_count;
         return will_owns;
     }
 
     bool expand(memory_block& block, std::size_t delta)
     {
-        CA_UNUSED(delta);
+        COAL_UNUSED(delta);
         if (will_expand)
         {
             block = expand_block;
