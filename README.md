@@ -25,10 +25,13 @@ constexpr std::size_t size(std::size_t s)
     return sizeof(corruption_detector) + s;
 }
 
-using allocator_t = coal::segregator_allocator<
-        coal::slab_allocator<coal::malloc_allocator, 2048, 8, 16, 32, 64, 128, 512, 1024>,
-        coal::free_list_allocator<coal::prefixed_size_allocator<coal::malloc_allocator>, coal::free_list_strategy::limited_size<coal::free_list_strategy::best_fit, 64>>,
-        1024>>;
+using allocator_t = affix_allocator<
+    segregator_allocator<
+        slab_allocator<coal::malloc_allocator, 0x1000 * 2, size(8), size(16), size(32), size(64), size(128), size(512), size(1024)>,
+        free_list_allocator<prefixed_size_allocator<coal::malloc_allocator>, limited_size_free_list_strategy<best_fit_free_list_strategy, 64>>,
+        1024>,
+    corruption_detector,
+    corruption_detector>;
 
 allocator_t allocator;
 
