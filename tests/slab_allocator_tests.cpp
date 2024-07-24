@@ -23,7 +23,41 @@ TEMPLATE_LIST_TEST_CASE_METHOD(basic_allocator_fixture, "slab_allocator basics",
     this->test_basics();
 }
 
-TEST_CASE("slab_allocator allocate and deallocate objects with sizes matching slab sizes")
+using mock_slab_allocator = slab_allocator<mock::minimal_allocator, 0x1000, 32, 64, 128, 256, 512, 1024>;
+
+struct slab_allocator_fixture : allocator_fixture<mock_slab_allocator>
+{
+    struct mock_initializer
+    {
+        void init([[maybe_unused]] mock_slab_allocator& root)
+        {
+            ++init_count;
+        }
+
+        void init([[maybe_unused]] mock::minimal_allocator& a)
+        {
+            CHECK(init_count == 0);
+        }
+
+        std::size_t init_count{0};
+    };
+
+    slab_allocator_fixture()
+    {
+        mock::minimal_allocator::reset_mock();
+    }
+};
+
+TEST_CASE_METHOD(slab_allocator_fixture, "slab_allocator init", "[slab_allocator], [allocator]")
+{
+    mock_slab_allocator allocator;
+    mock_initializer initializer;
+    allocator.init(initializer);
+
+    CHECK(mock::minimal_allocator::init_count == 1);
+}
+
+TEST_CASE("slab_allocator allocate and deallocate objects with sizes matching slab sizes", "[slab_allocator], [allocator]")
 {
     slab_allocator<stack_allocator<0x1000 * 3>, 0x1000, 32, 64, 128> allocator;
 
@@ -44,7 +78,7 @@ TEST_CASE("slab_allocator allocate and deallocate objects with sizes matching sl
     allocator.deallocate(block3);
 }
 
-TEST_CASE("slab_allocator allocate and deallocate objects with sizes less than slab sizes")
+TEST_CASE("slab_allocator allocate and deallocate objects with sizes less than slab sizes", "[slab_allocator], [allocator]")
 {
     slab_allocator<stack_allocator<0x1000 * 3>, 0x1000, 32, 64, 128> allocator;
 

@@ -43,6 +43,26 @@ struct segregator_allocator_fixture : allocator_fixture<mock_segregator_allocato
     using mock_small = mock::basic_allocator<small_tag>;
     using mock_large = mock::basic_allocator<large_tag>;
 
+    struct mock_initializer
+    {
+        void init([[maybe_unused]] mock_segregator_allocator& root)
+        {
+            ++init_count;
+        }
+
+        void init([[maybe_unused]] mock_small& a)
+        {
+            CHECK(init_count == 0);
+        }
+
+        void init([[maybe_unused]] mock_large& a)
+        {
+            CHECK(init_count == 0);
+        }
+
+        std::size_t init_count{0};
+    };
+
     static constexpr size_t threshold = mock_segregator_allocator::threshold;
 
     static constexpr size_t small_threshold = threshold - 1;
@@ -55,6 +75,16 @@ struct segregator_allocator_fixture : allocator_fixture<mock_segregator_allocato
     }
 };
 
+TEST_CASE_METHOD(segregator_allocator_fixture, "segregator_allocator init", "[segregator_allocator], [allocator]")
+{
+    mock_segregator_allocator allocator;
+    mock_initializer initializer;
+    allocator.init(initializer);
+
+    CHECK(mock_small::init_count == 1);
+    CHECK(mock_large::init_count == 1);
+}
+
 TEST_CASE_METHOD(segregator_allocator_fixture, "segregator_allocator allocate with small allocator", "[segregator_allocator], [allocator]")
 {
     mock_small::allocate_block = memory_block{&allocator, small_threshold};
@@ -64,6 +94,7 @@ TEST_CASE_METHOD(segregator_allocator_fixture, "segregator_allocator allocate wi
     CHECK(mock_small::allocate_count == 1);
     CHECK(mock_large::allocate_count == 0);
 }
+
 TEST_CASE_METHOD(segregator_allocator_fixture, "segregator_allocator allocate with large allocator", "[segregator_allocator], [allocator]")
 {
     mock_large::allocate_block = memory_block{&allocator, large_threshold};

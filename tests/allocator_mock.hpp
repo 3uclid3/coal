@@ -16,8 +16,9 @@ struct basic_minimal_allocator
     }
 
     template<typename Initializer>
-    void init(Initializer&)
+    void init([[maybe_unused]] Initializer& initializer)
     {
+        ++init_count;
     }
 
     [[nodiscard]] memory_block allocate([[maybe_unused]] std::size_t size)
@@ -57,6 +58,7 @@ struct basic_minimal_allocator
         will_deallocate = true;
         allocate_block = nullblk;
         reallocate_block = nullblk;
+        init_count = 0;
         allocate_count = 0;
         reallocate_count = 0;
         deallocate_count = 0;
@@ -67,6 +69,7 @@ struct basic_minimal_allocator
     inline static bool will_deallocate{true};
     inline static memory_block allocate_block{nullblk};
     inline static memory_block reallocate_block{nullblk};
+    inline static std::size_t init_count{0};
     inline static std::size_t allocate_count{0};
     inline static std::size_t reallocate_count{0};
     inline static std::size_t deallocate_count{0};

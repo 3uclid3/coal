@@ -53,7 +53,7 @@ template<typename Initializer>
 constexpr void fallback_allocator<PrimaryAllocatorT, FallbackAllocatorT>::init(Initializer& initializer)
 {
     _primary.init(initializer);
-    _primary.init(initializer);
+    _fallback.init(initializer);
 
     initializer.init(*this);
 }

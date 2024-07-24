@@ -68,7 +68,6 @@ template<typename Initializer>
 constexpr void free_list_allocator<AllocatorT, StrategyT>::init(Initializer& initializer)
 {
     _allocator.init(initializer);
-    _strategy.init(initializer);
 
     initializer.init(*this);
 }

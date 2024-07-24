@@ -31,12 +31,42 @@ struct fallback_allocator_fixture : allocator_fixture<mock_fallback_allocator>
     using mock_primary = mock::basic_allocator<primary_tag>;
     using mock_fallback = mock::basic_allocator<fallback_tag>;
 
+    struct mock_initializer
+    {
+        void init([[maybe_unused]] mock_fallback_allocator& root)
+        {
+            ++init_count;
+        }
+
+        void init([[maybe_unused]] mock_primary& primary)
+        {
+            CHECK(init_count == 0);
+        }
+
+        void init([[maybe_unused]] mock_fallback& fallback)
+        {
+            CHECK(init_count == 0);
+        }
+
+        std::size_t init_count{0};
+    };
+
     fallback_allocator_fixture()
     {
         mock_primary::reset_mock();
         mock_fallback::reset_mock();
     }
 };
+
+TEST_CASE_METHOD(fallback_allocator_fixture, "fallback_allocator init", "[fallback_allocator], [allocator]")
+{
+    mock_fallback_allocator allocator;
+    mock_initializer initializer;
+    allocator.init(initializer);
+
+    CHECK(mock_fallback::init_count == 1);
+    CHECK(mock_primary::init_count == 1);
+}
 
 TEST_CASE_METHOD(fallback_allocator_fixture, "fallback_allocator allocate zero returns nullblk", "[fallback_allocator], [allocator]")
 {

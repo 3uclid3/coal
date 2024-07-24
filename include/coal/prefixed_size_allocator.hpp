@@ -12,10 +12,16 @@ class prefixed_size_allocator : private affix_allocator<AllocatorT, std::size_t>
     using super = affix_allocator<AllocatorT, std::size_t>;
 
 public:
+    using allocator = super::allocator;
+    using prefix = super::prefix;
+
     static constexpr std::size_t alignment = super::alignment;
 
 public:
     [[nodiscard]] constexpr std::size_t get_alignment() const;
+
+    [[nodiscard]] constexpr const allocator& get_allocator() const;
+    [[nodiscard]] constexpr allocator& get_allocator();
 
     template<typename Initializer>
     constexpr void init(Initializer& initializer);
@@ -45,9 +51,23 @@ constexpr std::size_t prefixed_size_allocator<AllocatorT>::get_alignment() const
 }
 
 template<typename AllocatorT>
+constexpr const prefixed_size_allocator<AllocatorT>::allocator& prefixed_size_allocator<AllocatorT>::get_allocator() const
+{
+    return super::get_allocator();
+}
+
+template<typename AllocatorT>
+constexpr prefixed_size_allocator<AllocatorT>:: allocator& prefixed_size_allocator<AllocatorT>::get_allocator()
+{
+    return super::get_allocator();
+}
+
+template<typename AllocatorT>
 template<typename Initializer>
 constexpr void prefixed_size_allocator<AllocatorT>::init(Initializer& initializer)
 {
+    get_allocator().init(initializer);
+
     initializer.init(*this);
 }
 

@@ -35,6 +35,9 @@ public:
 public:
     [[nodiscard]] constexpr size_t get_alignment() const;
 
+    [[nodiscard]] constexpr const allocator& get_allocator() const;
+    [[nodiscard]] constexpr allocator& get_allocator();
+
     template<typename Initializer>
     constexpr void init(Initializer& initializer);
 
@@ -125,9 +128,21 @@ private:
 };
 
 template<typename AllocatorT, typename PrefixT, typename SuffixT>
-[[nodiscard]] constexpr size_t affix_allocator<AllocatorT, PrefixT, SuffixT>::get_alignment() const
+constexpr size_t affix_allocator<AllocatorT, PrefixT, SuffixT>::get_alignment() const
 {
     return alignment;
+}
+
+template<typename AllocatorT, typename PrefixT, typename SuffixT>
+constexpr const affix_allocator<AllocatorT, PrefixT, SuffixT>::allocator& affix_allocator<AllocatorT, PrefixT, SuffixT>::get_allocator()const
+{
+    return _allocator;
+}
+
+template<typename AllocatorT, typename PrefixT, typename SuffixT>
+constexpr affix_allocator<AllocatorT, PrefixT, SuffixT>::allocator& affix_allocator<AllocatorT, PrefixT, SuffixT>::get_allocator() 
+{
+    return _allocator;
 }
 
 template<typename AllocatorT, typename PrefixT, typename SuffixT>

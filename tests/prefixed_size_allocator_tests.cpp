@@ -7,9 +7,10 @@
 #include <coal/stack_allocator.hpp>
 
 #include <allocator_fixture.hpp>
+#include <allocator_mock.hpp>
 
 namespace coal {
-
+ 
 using prefixed_size_basic_allocators = std::tuple<
     prefixed_size_allocator<stack_allocator<0x1000, 4>>,
     prefixed_size_allocator<stack_allocator<0x1000, 8>>,
@@ -18,6 +19,40 @@ using prefixed_size_basic_allocators = std::tuple<
 TEMPLATE_LIST_TEST_CASE_METHOD(basic_allocator_fixture, "prefixed_size_allocator basics", "[prefixed_size_allocator], [allocator]", prefixed_size_basic_allocators)
 {
     this->test_basics();
+}
+
+using mock_prefixed_size_allocator = prefixed_size_allocator<mock::minimal_allocator>;
+
+struct mock_prefixed_size_allocator_fixture : allocator_fixture<mock_prefixed_size_allocator>
+{
+    struct mock_initializer
+    {
+        void init([[maybe_unused]] mock_prefixed_size_allocator& root)
+        {
+            ++init_count;
+        }
+
+        void init([[maybe_unused]] mock::minimal_allocator& a)
+        {
+            CHECK(init_count == 0);
+        }
+
+        std::size_t init_count{0};
+    };
+
+    mock_prefixed_size_allocator_fixture()
+    {
+        mock::minimal_allocator::reset_mock();
+    }
+};
+
+TEST_CASE_METHOD(mock_prefixed_size_allocator_fixture, "prefixed_size_allocator init", "[prefixed_size_allocator], [allocator]")
+{
+    mock_prefixed_size_allocator allocator;
+    mock_initializer initializer;
+    allocator.init(initializer);
+
+    CHECK(mock::minimal_allocator::init_count == 1);
 }
 
 using prefixed_size_allocator_fixture = allocator_fixture<prefixed_size_allocator<stack_allocator<512>>>;
