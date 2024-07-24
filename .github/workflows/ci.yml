@@ -38,7 +38,7 @@
 
           - name: Tests
             run: |
-              xmake test
+              xmake test -v
 
       sanitizers:
         name: Sanitizers

@@ -1,13 +1,13 @@
 #include <catch2/catch_template_test_macros.hpp>
 
-#include <ca/memory_block.hpp>
-#include <ca/segregator_allocator.hpp>
-#include <ca/stack_allocator.hpp>
+#include <coal/memory_block.hpp>
+#include <coal/segregator_allocator.hpp>
+#include <coal/stack_allocator.hpp>
 
 #include <allocator_fixture.hpp>
 #include <allocator_mock.hpp>
 
-namespace ca {
+namespace coal {
 
 using segregator_basic_allocators = std::tuple<
     segregator_allocator<
@@ -113,4 +113,4 @@ TEST_CASE_METHOD(segregator_allocator_fixture, "segregator_allocator deallocate 
     CHECK(mock_small::deallocate_count == 0);
 }
 
-} // namespace ca
+} // namespace coal

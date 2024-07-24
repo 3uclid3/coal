@@ -4,13 +4,13 @@
 #include <type_traits>
 #include <utility>
 
-#include <ca/alignment.hpp>
-#include <ca/allocator_traits.hpp>
-#include <ca/def.hpp>
-#include <ca/details/allocator_reallocation.hpp>
-#include <ca/memory_block.hpp>
+#include <coal/alignment.hpp>
+#include <coal/allocator_traits.hpp>
+#include <coal/def.hpp>
+#include <coal/details/allocator_reallocation.hpp>
+#include <coal/memory_block.hpp>
 
-namespace ca {
+namespace coal {
 
 struct no_memory_affix
 {
@@ -316,4 +316,4 @@ constexpr affix_allocator<AllocatorT, PrefixT, SuffixT>::suffix* affix_allocator
     return const_cast<suffix*>(std::as_const(*this).suffix_from_outer(outer_block));
 }
 
-} // namespace ca
+} // namespace coal

@@ -1,9 +1,9 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
 
-#include <ca/null_allocator.hpp>
+#include <coal/null_allocator.hpp>
 
-namespace ca {
+namespace coal {
 
 TEST_CASE("null_allocator allocate nullblk", "[null_allocator], [allocator]")
 {
@@ -49,4 +49,4 @@ TEST_CASE("null_allocator cannot deallocate", "[null_allocator], [allocator]")
     CHECK(block == nullblk);
 }
 
-} // namespace ca
+} // namespace coal

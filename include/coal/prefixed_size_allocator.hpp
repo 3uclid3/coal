@@ -1,11 +1,11 @@
 #pragma once
 
-#include <ca/affix_allocator.hpp>
-#include <ca/def.hpp>
-#include <ca/details/allocator_reallocation.hpp>
-#include <ca/memory_block.hpp>
+#include <coal/affix_allocator.hpp>
+#include <coal/def.hpp>
+#include <coal/details/allocator_reallocation.hpp>
+#include <coal/memory_block.hpp>
 
-namespace ca {
+namespace coal {
 
 template<typename AllocatorT>
 class prefixed_size_allocator : private affix_allocator<AllocatorT, std::size_t>
@@ -140,4 +140,4 @@ constexpr void prefixed_size_allocator<AllocatorT>::set_prefixed_size(const memo
     *ptr = size;
 }
 
-} // namespace ca
+} // namespace coal

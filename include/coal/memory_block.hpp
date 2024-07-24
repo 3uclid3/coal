@@ -2,7 +2,7 @@
 
 #include <cstddef>
 
-namespace ca {
+namespace coal {
 
 struct memory_block
 {
@@ -62,4 +62,4 @@ constexpr T* memory_block::as() const
 
 inline static constexpr memory_block nullblk{nullptr, 0};
 
-} // namespace ca
+} // namespace coal

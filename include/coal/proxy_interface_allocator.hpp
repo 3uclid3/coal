@@ -3,12 +3,12 @@
 #include <array>
 #include <functional>
 
-#include <ca/allocator_traits.hpp>
-#include <ca/def.hpp>
-#include <ca/memory_block.hpp>
-#include <ca/null_allocator.hpp>
+#include <coal/allocator_traits.hpp>
+#include <coal/def.hpp>
+#include <coal/memory_block.hpp>
+#include <coal/null_allocator.hpp>
 
-namespace ca {
+namespace coal {
 
 class proxy_interface_allocator
 {
@@ -209,4 +209,4 @@ constexpr bool proxy_interface_allocator::has_allocator() const
     return _interface != nullptr;
 }
 
-} // namespace ca
+} // namespace coal

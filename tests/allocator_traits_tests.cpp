@@ -1,10 +1,10 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include <ca/allocator_traits.hpp>
-#include <ca/def.hpp>
-#include <ca/memory_block.hpp>
+#include <coal/allocator_traits.hpp>
+#include <coal/def.hpp>
+#include <coal/memory_block.hpp>
 
-namespace ca::allocator_traits {
+namespace coal::allocator_traits {
 
 struct empty_allocator
 {
@@ -32,4 +32,4 @@ TEST_CASE("allocator_traits", "[allocator_traits]")
     STATIC_CHECK_FALSE(has_deallocate_all<empty_allocator>);
 }
 
-} // namespace ca::allocator_traits
+} // namespace coal::allocator_traits

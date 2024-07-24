@@ -1,16 +1,16 @@
 #pragma once
 
-#include <ca/def.hpp>
+#include <coal/def.hpp>
 
-namespace ca {
+namespace coal {
 
 struct free_list;
 struct free_list_node;
 struct memory_block;
 
-} // namespace ca
+} // namespace coal
 
-namespace ca::free_list_strategy {
+namespace coal::free_list_strategy {
 
 template<typename StrategyT, std::size_t MaxSizeT>
 struct limited_size : private StrategyT
@@ -58,4 +58,4 @@ constexpr bool limited_size<StrategyT, MaxSizeT>::deallocate(free_list& list, me
     return true;
 }
 
-} // namespace ca::free_list_strategy
+} // namespace coal::free_list_strategy

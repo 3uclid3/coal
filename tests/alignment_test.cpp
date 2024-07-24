@@ -3,9 +3,9 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
 
-#include <ca/alignment.hpp>
+#include <coal/alignment.hpp>
 
-namespace ca {
+namespace coal {
 
 TEST_CASE("align_up", "[alignment]")
 {
@@ -57,4 +57,4 @@ TEST_CASE("align_down", "[alignment]")
     CHECK(align_down(value, align) == expected);
 }
 
-} // namespace ca
+} // namespace coal

@@ -3,12 +3,12 @@
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
 
-#include <ca/prefixed_size_allocator.hpp>
-#include <ca/stack_allocator.hpp>
+#include <coal/prefixed_size_allocator.hpp>
+#include <coal/stack_allocator.hpp>
 
 #include <allocator_fixture.hpp>
 
-namespace ca {
+namespace coal {
 
 using prefixed_size_basic_allocators = std::tuple<
     prefixed_size_allocator<stack_allocator<0x1000, 4>>,
@@ -57,4 +57,4 @@ TEST_CASE_METHOD(prefixed_size_allocator_fixture, "prefixed_size_allocator reall
     deallocate_and_check_is_nullblk(block);
 }
 
-} // namespace ca
+} // namespace coal

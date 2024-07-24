@@ -1,12 +1,12 @@
 #pragma once
 
-#include <ca/alignment.hpp>
-#include <ca/allocator_traits.hpp>
-#include <ca/def.hpp>
-#include <ca/details/allocator_reallocation.hpp>
-#include <ca/memory_block.hpp>
+#include <coal/alignment.hpp>
+#include <coal/allocator_traits.hpp>
+#include <coal/def.hpp>
+#include <coal/details/allocator_reallocation.hpp>
+#include <coal/memory_block.hpp>
 
-namespace ca {
+namespace coal {
 
 struct free_list_node
 {
@@ -156,4 +156,4 @@ constexpr void free_list_allocator<AllocatorT, StrategyT>::deallocate_all()
     _free_list = {};
 }
 
-} // namespace ca
+} // namespace coal

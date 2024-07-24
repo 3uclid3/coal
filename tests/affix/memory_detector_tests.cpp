@@ -1,8 +1,8 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include <ca/affix/memory_corruption_detector.hpp>
+#include <coal/affix/memory_corruption_detector.hpp>
 
-namespace ca {
+namespace coal {
 
 struct memory_corruption_reporter
 {
@@ -50,4 +50,4 @@ TEST_CASE("memory_corruption_detector does report if corruption", "[memory_corru
     CHECK(memory_corruption_reporter::has_reported);
 }
 
-} // namespace ca
+} // namespace coal

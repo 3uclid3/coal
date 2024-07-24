@@ -3,9 +3,9 @@
 #include <concepts>
 #include <type_traits>
 
-#include <ca/def.hpp>
+#include <coal/def.hpp>
 
-namespace ca {
+namespace coal {
 
 inline static constexpr std::size_t default_alignment{CA_DEFAULT_ALIGNMENT};
 
@@ -22,4 +22,4 @@ constexpr auto align_up(std::integral auto n, std::integral auto a)
     return align_down(n + a - 1, a);
 }
 
-} // namespace ca
+} // namespace coal

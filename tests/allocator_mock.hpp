@@ -1,10 +1,10 @@
 #pragma once
 
-#include <ca/alignment.hpp>
-#include <ca/def.hpp>
-#include <ca/memory_block.hpp>
+#include <coal/alignment.hpp>
+#include <coal/def.hpp>
+#include <coal/memory_block.hpp>
 
-namespace ca::mock {
+namespace coal::mock {
 
 template<typename TagT>
 struct basic_minimal_allocator
@@ -124,4 +124,4 @@ struct default_allocator_tag
 using minimal_allocator = basic_minimal_allocator<default_allocator_tag>;
 using allocator = basic_allocator<default_allocator_tag>;
 
-} // namespace ca::mock
+} // namespace coal::mock

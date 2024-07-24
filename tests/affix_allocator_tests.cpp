@@ -2,14 +2,14 @@
 
 #include <catch2/catch_template_test_macros.hpp>
 
-#include <ca/affix_allocator.hpp>
-#include <ca/def.hpp>
-#include <ca/stack_allocator.hpp>
+#include <coal/affix_allocator.hpp>
+#include <coal/def.hpp>
+#include <coal/stack_allocator.hpp>
 
 #include <allocator_fixture.hpp>
 #include <object_mock.hpp>
 
-namespace ca {
+namespace coal {
 
 struct prefix : mock::basic_object<prefix, std::uint8_t>
 {
@@ -211,4 +211,4 @@ TEMPLATE_LIST_TEST_CASE_METHOD(affix_allocator_fixture, "stack_allocator expand 
     this->deallocate_and_check_is_nullblk(block);
 }
 
-} // namespace ca
+} // namespace coal

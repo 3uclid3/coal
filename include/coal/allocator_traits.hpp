@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ca/memory_block.hpp>
+#include <coal/memory_block.hpp>
 
 #define _CA_TYPE_TRAIT_HAS_METHOD_IMPL(name, method_name, return_type, suffix, ...) \
     namespace impl { \
@@ -31,14 +31,14 @@
 #define CA_TYPE_TRAIT_HAS_METHOD_CONST(name, method_name, return_type, ...) \
     _CA_TYPE_TRAIT_HAS_METHOD_IMPL(name, method_name, return_type, const, __VA_ARGS__)
 
-namespace ca {
+namespace coal {
 struct memory_block;
 }
 
-namespace ca::allocator_traits {
+namespace coal::allocator_traits {
 
 CA_TYPE_TRAIT_HAS_METHOD_CONST(has_owns, owns, bool, const memory_block&);
 CA_TYPE_TRAIT_HAS_METHOD(has_expand, expand, bool, memory_block&, std::size_t);
 CA_TYPE_TRAIT_HAS_METHOD(has_deallocate_all, deallocate_all, void);
 
-} // namespace ca::allocator_traits
+} // namespace coal::allocator_traits

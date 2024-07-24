@@ -3,9 +3,9 @@
 #include <tuple>
 
 #include <allocator_fixture.hpp>
-#include <ca/stack_allocator.hpp>
+#include <coal/stack_allocator.hpp>
 
-namespace ca {
+namespace coal {
 
 using stack_allocator_types = std::tuple<
     stack_allocator<0x1000, 4>,
@@ -227,4 +227,4 @@ TEMPLATE_LIST_TEST_CASE_METHOD(allocator_fixture, "stack_allocator expand over c
     this->deallocate_and_check_is_nullblk(block);
 }
 
-} // namespace ca
+} // namespace coal

@@ -1,8 +1,8 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include <ca/memory_block.hpp>
+#include <coal/memory_block.hpp>
 
-namespace ca {
+namespace coal {
 
 TEST_CASE("memory_block", "[memory_block]")
 {
@@ -18,4 +18,4 @@ TEST_CASE("memory_block", "[memory_block]")
     CHECK(block);
 }
 
-} // namespace ca
+} // namespace coal

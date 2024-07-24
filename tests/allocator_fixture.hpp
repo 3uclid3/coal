@@ -4,12 +4,12 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include <ca/alignment.hpp>
-#include <ca/allocator_traits.hpp>
-#include <ca/def.hpp>
-#include <ca/memory_block.hpp>
+#include <coal/alignment.hpp>
+#include <coal/allocator_traits.hpp>
+#include <coal/def.hpp>
+#include <coal/memory_block.hpp>
 
-namespace ca {
+namespace coal {
 
 template<typename AllocatorT>
 struct scope_memory_block : memory_block
@@ -408,4 +408,4 @@ struct basic_allocator_fixture
     bool large_expand = true;
 };
 
-} // namespace ca
+} // namespace coal

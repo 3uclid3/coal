@@ -1,11 +1,11 @@
 #pragma once
 
-#include <ca/alignment.hpp>
-#include <ca/def.hpp>
-#include <ca/details/allocator_reallocation.hpp>
-#include <ca/memory_block.hpp>
+#include <coal/alignment.hpp>
+#include <coal/def.hpp>
+#include <coal/details/allocator_reallocation.hpp>
+#include <coal/memory_block.hpp>
 
-namespace ca {
+namespace coal {
 
 template<std::size_t SizeT, std::size_t AlignmentT = default_alignment>
 class stack_allocator
@@ -167,4 +167,4 @@ constexpr bool stack_allocator<SizeT, AlignmentT>::is_last_allocated_unaligned_b
     return _ptr == static_cast<const std::uint8_t*>(block.ptr) + align_up(block.size, AlignmentT);
 }
 
-} // namespace ca
+} // namespace coal

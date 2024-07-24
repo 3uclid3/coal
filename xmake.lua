@@ -1,4 +1,4 @@
-set_project("ca")
+set_project("coal")
 set_version("v0.1")
 
 set_license("MIT")
@@ -15,7 +15,7 @@ add_requires("catch2 3.x", "hedley 15", { system = false })
 target("test")
     set_default(true)
     set_kind("binary")
-    add_tests("ca")
+    add_tests("coal")
 
     add_packages("catch2", "hedley")
 

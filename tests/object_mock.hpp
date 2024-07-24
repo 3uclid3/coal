@@ -1,8 +1,8 @@
 #pragma once
 
-#include <ca/def.hpp>
+#include <coal/def.hpp>
 
-namespace ca::mock {
+namespace coal::mock {
 
 template<typename TagT, typename SizeT = std::size_t>
 struct basic_object
@@ -219,4 +219,4 @@ using object_fixture = basic_object_fixture<object>;
 using copy_only_object_fixture = basic_object_fixture<copy_only_object>;
 using move_only_object_fixture = basic_object_fixture<move_only_object>;
 
-} // namespace ca::mock
+} // namespace coal::mock

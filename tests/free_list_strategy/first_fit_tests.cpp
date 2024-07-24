@@ -1,11 +1,11 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include <ca/free_list_strategy/first_fit.hpp>
-#include <ca/memory_block.hpp>
+#include <coal/free_list_strategy/first_fit.hpp>
+#include <coal/memory_block.hpp>
 
 #include <free_list_mock.hpp>
 
-namespace ca::free_list_strategy {
+namespace coal::free_list_strategy {
 
 TEST_CASE("first_fit allocate", "[first_fit], [free_list_strategy]")
 {
@@ -50,4 +50,4 @@ TEST_CASE("first_fit deallocate", "[first_fit], [free_list_strategy]")
     }
 }
 
-} // namespace ca::free_list_strategy
+} // namespace coal::free_list_strategy

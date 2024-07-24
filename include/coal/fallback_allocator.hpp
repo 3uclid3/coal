@@ -1,11 +1,11 @@
 #pragma once
 
-#include <ca/allocator_traits.hpp>
-#include <ca/def.hpp>
-#include <ca/details/allocator_reallocation.hpp>
-#include <ca/memory_block.hpp>
+#include <coal/allocator_traits.hpp>
+#include <coal/def.hpp>
+#include <coal/details/allocator_reallocation.hpp>
+#include <coal/memory_block.hpp>
 
-namespace ca {
+namespace coal {
 
 template<typename PrimaryAllocatorT, typename FallbackAllocatorT>
 class fallback_allocator : private PrimaryAllocatorT, private FallbackAllocatorT
@@ -144,4 +144,4 @@ constexpr void fallback_allocator<PrimaryAllocatorT, FallbackAllocatorT>::deallo
     fallback::deallocate_all();
 }
 
-} // namespace ca
+} // namespace coal

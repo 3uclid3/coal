@@ -2,12 +2,12 @@
 
 #include <array>
 
-#include <ca/allocator_traits.hpp>
-#include <ca/def.hpp>
-#include <ca/details/allocator_reallocation.hpp>
-#include <ca/memory_block.hpp>
+#include <coal/allocator_traits.hpp>
+#include <coal/def.hpp>
+#include <coal/details/allocator_reallocation.hpp>
+#include <coal/memory_block.hpp>
 
-namespace ca {
+namespace coal {
 
 struct slab
 {
@@ -260,4 +260,4 @@ constexpr void slab_allocator<AllocatorT, SlabCapacityT, SlabSizesT...>::unsafe_
     block = nullblk;
 }
 
-} // namespace ca
+} // namespace coal

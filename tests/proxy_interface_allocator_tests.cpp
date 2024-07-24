@@ -1,13 +1,13 @@
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
 
-#include <ca/proxy_interface_allocator.hpp>
-#include <ca/stack_allocator.hpp>
+#include <coal/proxy_interface_allocator.hpp>
+#include <coal/stack_allocator.hpp>
 
 #include <allocator_fixture.hpp>
 #include <allocator_mock.hpp>
 
-namespace ca {
+namespace coal {
 
 TEST_CASE_METHOD(basic_allocator_fixture<proxy_interface_allocator>, "proxy_interface_allocator basics", "[proxy_interface_allocator], [allocator]")
 {
@@ -152,4 +152,4 @@ TEST_CASE_METHOD(allocator_fixture<mock::minimal_allocator>, "proxy_interface_al
     }
 }
 
-} // namespace ca
+} // namespace coal

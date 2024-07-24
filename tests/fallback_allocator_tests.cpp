@@ -1,13 +1,13 @@
 #include <catch2/catch_template_test_macros.hpp>
 
-#include <ca/fallback_allocator.hpp>
-#include <ca/memory_block.hpp>
-#include <ca/stack_allocator.hpp>
+#include <coal/fallback_allocator.hpp>
+#include <coal/memory_block.hpp>
+#include <coal/stack_allocator.hpp>
 
 #include <allocator_fixture.hpp>
 #include <allocator_mock.hpp>
 
-namespace ca {
+namespace coal {
 
 using fallback_basic_allocators = std::tuple<
     fallback_allocator<stack_allocator<0x100, 4>, stack_allocator<0x1000, 4>>,
@@ -105,4 +105,4 @@ TEST_CASE_METHOD(fallback_allocator_fixture, "fallback_allocator deallocate owne
     CHECK(mock_primary::deallocate_count == 0);
 }
 
-} // namespace ca
+} // namespace coal

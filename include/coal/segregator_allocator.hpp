@@ -1,12 +1,12 @@
 #pragma once
 
-#include <ca/alignment.hpp>
-#include <ca/allocator_traits.hpp>
-#include <ca/def.hpp>
-#include <ca/details/allocator_reallocation.hpp>
-#include <ca/memory_block.hpp>
+#include <coal/alignment.hpp>
+#include <coal/allocator_traits.hpp>
+#include <coal/def.hpp>
+#include <coal/details/allocator_reallocation.hpp>
+#include <coal/memory_block.hpp>
 
-namespace ca {
+namespace coal {
 
 template<typename SmallAllocatorT, typename LargeAllocatorT, std::size_t ThresholdT>
 class segregator_allocator : private SmallAllocatorT, private LargeAllocatorT
@@ -150,4 +150,4 @@ constexpr bool segregator_allocator<SmallAllocatorT, LargeAllocatorT, ThresholdT
     return size <= threshold;
 }
 
-} // namespace ca
+} // namespace coal

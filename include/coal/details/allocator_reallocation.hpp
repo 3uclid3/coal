@@ -2,9 +2,9 @@
 
 #include <cstring>
 
-#include <ca/memory_block.hpp>
+#include <coal/memory_block.hpp>
 
-namespace ca::details {
+namespace coal::details {
 
 struct default_reallocate_result
 {
@@ -50,4 +50,4 @@ constexpr bool reallocate_with_new_allocator(OriginalAllocatorT& original_alloca
     return false;
 }
 
-} // namespace ca::details
+} // namespace coal::details

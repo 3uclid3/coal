@@ -2,12 +2,12 @@
 
 #include <array>
 
-#include <ca/free_list_allocator.hpp>
-#include <ca/memory_block.hpp>
+#include <coal/free_list_allocator.hpp>
+#include <coal/memory_block.hpp>
 
-namespace ca::mock {
+namespace coal::mock {
 
-struct free_list : ca::free_list
+struct free_list : coal::free_list
 {
     constexpr memory_block new_node_block(size_t size)
     {
@@ -47,4 +47,4 @@ struct free_list : ca::free_list
     free_list_node* last_node{nullptr};
 };
 
-} // namespace ca::mock
+} // namespace coal::mock

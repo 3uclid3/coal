@@ -2,10 +2,10 @@
 
 #include <cassert>
 
-#include <ca/def.hpp>
-#include <ca/memory_block.hpp>
+#include <coal/def.hpp>
+#include <coal/memory_block.hpp>
 
-namespace ca {
+namespace coal {
 
 class null_allocator
 {
@@ -70,4 +70,4 @@ constexpr void null_allocator::deallocate_all()
 {
 }
 
-} // namespace ca
+} // namespace coal

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <ca/free_list_allocator.hpp>
+#include <coal/free_list_allocator.hpp>
 
-namespace ca::free_list_strategy {
+namespace coal::free_list_strategy {
 
 struct best_fit
 {
@@ -75,4 +75,4 @@ constexpr bool best_fit::deallocate(free_list& list, memory_block& block)
     return true;
 }
 
-} // namespace ca::free_list_strategy
+} // namespace coal::free_list_strategy

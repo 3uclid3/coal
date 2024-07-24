@@ -3,9 +3,9 @@
 #include <array>
 #include <concepts>
 
-#include <ca/def.hpp>
+#include <coal/def.hpp>
 
-namespace ca {
+namespace coal {
 
 struct assert_memory_corruption_reporter
 {
@@ -48,4 +48,4 @@ constexpr memory_corruption_detector<T, PatternT, SizeT, ReporterT>::~memory_cor
     }
 }
 
-} // namespace ca
+} // namespace coal

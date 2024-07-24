@@ -2,13 +2,13 @@
 
 #include <catch2/catch_template_test_macros.hpp>
 
-#include <ca/slab_allocator.hpp>
-#include <ca/stack_allocator.hpp>
+#include <coal/slab_allocator.hpp>
+#include <coal/stack_allocator.hpp>
 
 #include <allocator_fixture.hpp>
 #include <allocator_mock.hpp>
 
-namespace ca {
+namespace coal {
 
 using slab_basic_allocators = std::tuple<
     slab_allocator<stack_allocator<0x1000 * 6, 4>, 0x1000, 32, 64, 128, 256, 512, 1024>,
@@ -142,4 +142,4 @@ TEST_CASE("slab_allocator stress test with delayed deallocation", "[slab_allocat
     }
 }
 
-} // namespace ca
+} // namespace coal
