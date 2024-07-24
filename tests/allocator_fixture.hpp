@@ -184,7 +184,7 @@ struct basic_allocator_fixture
 
                         for (std::size_t i = 0; i < 10; ++i)
                         {
-                            const std::size_t size = i % 2 ? unaligned_size : round_to_alignment(block.size + unaligned_size, allocator.get_alignment()) - block.size;
+                            const std::size_t size = i % 2 ? unaligned_size : align_up(block.size + unaligned_size, allocator.get_alignment()) - block.size;
                             const std::size_t expected_size = block.size + size;
 
                             INFO("expand #" << i << " size " << size);
@@ -257,7 +257,7 @@ struct basic_allocator_fixture
 
                     if (i % 2)
                     {
-                        size = round_to_alignment(size, allocator.get_alignment());
+                        size = align_up(size, allocator.get_alignment());
                     }
 
                     CHECK(allocator.reallocate(block, size));
@@ -378,7 +378,7 @@ struct basic_allocator_fixture
 
     void test_basics()
     {
-        aligned_size = round_to_alignment(unaligned_size, allocator.get_alignment());
+        aligned_size = align_up(unaligned_size, allocator.get_alignment());
 
         if (aligned_size == unaligned_size)
         {

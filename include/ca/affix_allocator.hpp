@@ -27,8 +27,8 @@ public:
 
     static constexpr size_t alignment = AllocatorT::alignment;
 
-    static constexpr size_t prefix_size = std::is_same_v<PrefixT, no_memory_affix> ? 0 : round_to_alignment(sizeof(PrefixT), alignment);
-    static constexpr size_t suffix_size = std::is_same_v<SuffixT, no_memory_affix> ? 0 : round_to_alignment(sizeof(SuffixT), alignment);
+    static constexpr size_t prefix_size = std::is_same_v<PrefixT, no_memory_affix> ? 0 : align_up(sizeof(PrefixT), alignment);
+    static constexpr size_t suffix_size = std::is_same_v<SuffixT, no_memory_affix> ? 0 : align_up(sizeof(SuffixT), alignment);
 
     static constexpr bool has_prefix = prefix_size > 0;
     static constexpr bool has_suffix = suffix_size > 0;
@@ -134,7 +134,7 @@ constexpr memory_block affix_allocator<AllocatorT, PrefixT, SuffixT>::allocate(s
         return nullblk;
     }
 
-    const size_t aligned_size = round_to_alignment(size, alignment);
+    const size_t aligned_size = align_up(size, alignment);
     memory_block outer_block = allocator::allocate(aligned_size + prefix_size + suffix_size);
 
     if (!outer_block)
@@ -173,8 +173,8 @@ constexpr bool affix_allocator<AllocatorT, PrefixT, SuffixT>::expand(memory_bloc
     }
 
     const size_t expected_size = block.size + delta;
-    const size_t expected_aligned_size = round_to_alignment(expected_size, alignment);
-    const size_t required_delta = expected_aligned_size - round_to_alignment(block.size, alignment);
+    const size_t expected_aligned_size = align_up(expected_size, alignment);
+    const size_t required_delta = expected_aligned_size - align_up(block.size, alignment);
 
     memory_block outer_block = unaligned_inner_to_outer(block);
 
@@ -206,7 +206,7 @@ constexpr bool affix_allocator<AllocatorT, PrefixT, SuffixT>::reallocate(memory_
     prefix_mover prefix_mover{*this, outer_block};
     suffix_mover suffix_mover{*this, outer_block};
 
-    const size_t aligned_size = round_to_alignment(new_size, alignment);
+    const size_t aligned_size = align_up(new_size, alignment);
     const bool reallocate_result = allocator::reallocate(outer_block, aligned_size + prefix_size + suffix_size);
 
     prefix_mover.move_to(*this, outer_block);
@@ -288,7 +288,7 @@ constexpr memory_block affix_allocator<AllocatorT, PrefixT, SuffixT>::aligned_in
 template<typename AllocatorT, typename PrefixT, typename SuffixT>
 constexpr memory_block affix_allocator<AllocatorT, PrefixT, SuffixT>::unaligned_inner_to_outer(const memory_block& unaligned_inner_block) const
 {
-    const size_t aligned_size = round_to_alignment(unaligned_inner_block.size, alignment);
+    const size_t aligned_size = align_up(unaligned_inner_block.size, alignment);
     return memory_block{unaligned_inner_block.as<std::uint8_t>() - prefix_size, aligned_size + prefix_size + suffix_size};
 }
 

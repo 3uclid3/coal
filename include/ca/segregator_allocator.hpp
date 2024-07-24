@@ -41,7 +41,7 @@ private:
     constexpr bool is_small(std::size_t size) const;
 
     static_assert(ThresholdT > 0, "Threshold must be greater than 0");
-    static_assert(round_to_alignment(ThresholdT, alignment) == ThresholdT, "Threshold must be a multiple of the alignment");
+    static_assert(align_up(ThresholdT, alignment) == ThresholdT, "Threshold must be a multiple of the alignment");
 };
 
 template<typename SmallAllocatorT, typename LargeAllocatorT, std::size_t ThresholdT>

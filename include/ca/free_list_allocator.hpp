@@ -62,7 +62,7 @@ constexpr std::size_t free_list_allocator<AllocatorT, StrategyT>::get_alignment(
 template<typename AllocatorT, typename StrategyT>
 constexpr memory_block free_list_allocator<AllocatorT, StrategyT>::allocate(std::size_t size)
 {
-    const std::size_t aligned_size = round_to_alignment(size, alignment);
+    const std::size_t aligned_size = align_up(size, alignment);
 
     if (_free_list)
     {
@@ -106,8 +106,8 @@ constexpr bool free_list_allocator<AllocatorT, StrategyT>::reallocate(memory_blo
         return reallocated;
     }
 
-    const std::size_t aligned_size = round_to_alignment(new_size, alignment);
-    const std::size_t aligned_block_size = round_to_alignment(block.size, alignment);
+    const std::size_t aligned_size = align_up(new_size, alignment);
+    const std::size_t aligned_block_size = align_up(block.size, alignment);
 
     if (aligned_size < aligned_block_size)
     {
@@ -136,7 +136,7 @@ constexpr void free_list_allocator<AllocatorT, StrategyT>::deallocate(memory_blo
         return;
     }
 
-    memory_block aligned_block(block.ptr, round_to_alignment(block.size, alignment));
+    memory_block aligned_block(block.ptr, align_up(block.size, alignment));
 
     if (!strategy::deallocate(_free_list, aligned_block))
     {

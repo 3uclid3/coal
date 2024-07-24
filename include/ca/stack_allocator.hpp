@@ -48,7 +48,7 @@ constexpr memory_block stack_allocator<SizeT, AlignmentT>::allocate(std::size_t 
         return nullblk;
     }
 
-    const std::size_t aligned_size = round_to_alignment(size, alignment);
+    const std::size_t aligned_size = align_up(size, alignment);
 
     if (_ptr + aligned_size > _data + SizeT)
     {
@@ -92,7 +92,7 @@ constexpr bool stack_allocator<SizeT, AlignmentT>::reallocate(memory_block& bloc
         return reallocated;
     }
 
-    const std::size_t aligned_new_size = round_to_alignment(new_size, AlignmentT);
+    const std::size_t aligned_new_size = align_up(new_size, AlignmentT);
 
     if (is_last_allocated_unaligned_block(block))
     {
@@ -105,7 +105,7 @@ constexpr bool stack_allocator<SizeT, AlignmentT>::reallocate(memory_block& bloc
         return false; // oom
     }
 
-    const std::size_t aligned_size = round_to_alignment(block.size, AlignmentT);
+    const std::size_t aligned_size = align_up(block.size, AlignmentT);
 
     if (aligned_size >= aligned_new_size)
     {
@@ -142,7 +142,7 @@ constexpr bool stack_allocator<SizeT, AlignmentT>::expand(memory_block& block, s
         return false;
     }
 
-    const std::size_t aligned_new_size = round_to_alignment(block.size + delta, alignment);
+    const std::size_t aligned_new_size = align_up(block.size + delta, alignment);
 
     if (block.as<std::uint8_t>() + aligned_new_size > _data + SizeT)
     {
@@ -164,7 +164,7 @@ constexpr void stack_allocator<SizeT, AlignmentT>::deallocate_all()
 template<std::size_t SizeT, std::size_t AlignmentT>
 constexpr bool stack_allocator<SizeT, AlignmentT>::is_last_allocated_unaligned_block(const memory_block& block) const
 {
-    return _ptr == static_cast<const std::uint8_t*>(block.ptr) + round_to_alignment(block.size, AlignmentT);
+    return _ptr == static_cast<const std::uint8_t*>(block.ptr) + align_up(block.size, AlignmentT);
 }
 
 } // namespace ca
