@@ -22,13 +22,13 @@ struct free_list
 };
 
 template<typename AllocatorT, typename StrategyT>
-class free_list_allocator : private AllocatorT, private StrategyT
+class free_list_allocator
 {
 public:
     using allocator = AllocatorT;
     using strategy = StrategyT;
 
-    static constexpr std::size_t alignment = AllocatorT::alignment;
+    static constexpr std::size_t alignment = allocator::alignment;
 
 public:
     constexpr std::size_t get_alignment() const;
@@ -53,6 +53,8 @@ public:
     constexpr void deallocate_all();
 
 private:
+    allocator _allocator;
+    strategy _strategy;
     free_list _free_list;
 };
 
@@ -66,8 +68,8 @@ template<typename AllocatorT, typename StrategyT>
 template<typename Initializer>
 constexpr void free_list_allocator<AllocatorT, StrategyT>::init(Initializer& initializer)
 {
-    allocator::init(initializer);
-    strategy::init(initializer);
+    _allocator.init(initializer);
+    _strategy.init(initializer);
 
     initializer.init(*this);
 }
@@ -79,13 +81,13 @@ constexpr memory_block free_list_allocator<AllocatorT, StrategyT>::allocate(std:
 
     if (_free_list)
     {
-        if (free_list_node* node = strategy::allocate(_free_list, aligned_size))
+        if (free_list_node* node = _strategy.allocate(_free_list, aligned_size))
         {
             return memory_block{node, size};
         }
     }
 
-    if (memory_block block = allocator::allocate(aligned_size))
+    if (memory_block block = _allocator.allocate(aligned_size))
     {
         block.size = size;
 
@@ -100,7 +102,7 @@ template<typename U>
 requires(allocator_traits::has_owns<U>)
 constexpr bool free_list_allocator<AllocatorT, StrategyT>::owns(const memory_block& block) const
 {
-    return allocator::owns(block);
+    return _allocator.owns(block);
 }
 
 template<typename AllocatorT, typename StrategyT>
@@ -108,7 +110,7 @@ template<typename U>
 requires(allocator_traits::has_expand<U>)
 constexpr bool free_list_allocator<AllocatorT, StrategyT>::expand(memory_block& block, std::size_t delta)
 {
-    return allocator::expand(block, delta);
+    return _allocator.expand(block, delta);
 }
 
 template<typename AllocatorT, typename StrategyT>
@@ -151,9 +153,9 @@ constexpr void free_list_allocator<AllocatorT, StrategyT>::deallocate(memory_blo
 
     memory_block aligned_block(block.ptr, align_up(block.size, alignment));
 
-    if (!strategy::deallocate(_free_list, aligned_block))
+    if (!_strategy.deallocate(_free_list, aligned_block))
     {
-        allocator::deallocate(aligned_block);
+        _allocator.deallocate(aligned_block);
     }
 
     block = nullblk;
@@ -164,7 +166,7 @@ template<typename U>
 requires(allocator_traits::has_deallocate_all<U>)
 constexpr void free_list_allocator<AllocatorT, StrategyT>::deallocate_all()
 {
-    allocator::deallocate_all();
+    _allocator.deallocate_all();
 
     _free_list = {};
 }

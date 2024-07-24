@@ -49,8 +49,6 @@ template<typename AllocatorT>
 template<typename Initializer>
 constexpr void prefixed_size_allocator<AllocatorT>::init(Initializer& initializer)
 {
-    super::init(initializer);
-
     initializer.init(*this);
 }
 

@@ -17,7 +17,7 @@ struct no_memory_affix
 };
 
 template<typename AllocatorT, typename PrefixT, typename SuffixT = no_memory_affix>
-class affix_allocator : private AllocatorT
+class affix_allocator
 {
 public:
     using allocator = AllocatorT;
@@ -25,7 +25,7 @@ public:
     using prefix = PrefixT;
     using suffix = SuffixT;
 
-    static constexpr size_t alignment = AllocatorT::alignment;
+    static constexpr size_t alignment = allocator::alignment;
 
     static constexpr size_t prefix_size = std::is_same_v<PrefixT, no_memory_affix> ? 0 : align_up(sizeof(PrefixT), alignment);
     static constexpr size_t suffix_size = std::is_same_v<SuffixT, no_memory_affix> ? 0 : align_up(sizeof(SuffixT), alignment);
@@ -121,6 +121,8 @@ private:
 
     using prefix_mover = affix_mover<PrefixT, affix_type::prefix>;
     using suffix_mover = affix_mover<SuffixT, affix_type::suffix>;
+
+    allocator _allocator;
 };
 
 template<typename AllocatorT, typename PrefixT, typename SuffixT>
@@ -133,7 +135,7 @@ template<typename AllocatorT, typename PrefixT, typename SuffixT>
 template<typename Initializer>
 constexpr void affix_allocator<AllocatorT, PrefixT, SuffixT>::init(Initializer& initializer)
 {
-    allocator::init(initializer);
+    _allocator.init(initializer);
 
     if constexpr (prefix_size > 0)
         prefix::init(initializer);
@@ -153,7 +155,7 @@ constexpr memory_block affix_allocator<AllocatorT, PrefixT, SuffixT>::allocate(s
     }
 
     const size_t aligned_size = align_up(size, alignment);
-    memory_block outer_block = allocator::allocate(aligned_size + prefix_size + suffix_size);
+    memory_block outer_block = _allocator.allocate(aligned_size + prefix_size + suffix_size);
 
     if (!outer_block)
     {
@@ -171,7 +173,7 @@ template<typename U>
 requires(allocator_traits::has_owns<U>)
 constexpr bool affix_allocator<AllocatorT, PrefixT, SuffixT>::owns(const memory_block& block) const
 {
-    return block && allocator::owns(unaligned_inner_to_outer(block));
+    return block && _allocator.owns(unaligned_inner_to_outer(block));
 }
 
 template<typename AllocatorT, typename PrefixT, typename SuffixT>
@@ -198,7 +200,7 @@ constexpr bool affix_allocator<AllocatorT, PrefixT, SuffixT>::expand(memory_bloc
 
     suffix_mover suffix_mover{*this, outer_block};
 
-    const bool expand_result = allocator::expand(outer_block, required_delta);
+    const bool expand_result = _allocator.expand(outer_block, required_delta);
 
     suffix_mover.move_to(*this, outer_block);
 
@@ -225,7 +227,7 @@ constexpr bool affix_allocator<AllocatorT, PrefixT, SuffixT>::reallocate(memory_
     suffix_mover suffix_mover{*this, outer_block};
 
     const size_t aligned_size = align_up(new_size, alignment);
-    const bool reallocate_result = allocator::reallocate(outer_block, aligned_size + prefix_size + suffix_size);
+    const bool reallocate_result = _allocator.reallocate(outer_block, aligned_size + prefix_size + suffix_size);
 
     prefix_mover.move_to(*this, outer_block);
     suffix_mover.move_to(*this, outer_block);
@@ -252,7 +254,7 @@ constexpr void affix_allocator<AllocatorT, PrefixT, SuffixT>::deallocate(memory_
     if constexpr (has_prefix) std::destroy_at(prefix_from_outer(outer_block));
     if constexpr (has_suffix) std::destroy_at(suffix_from_outer(outer_block));
 
-    allocator::deallocate(outer_block);
+    _allocator.deallocate(outer_block);
 
     block = nullblk;
 }

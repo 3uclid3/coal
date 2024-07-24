@@ -34,7 +34,7 @@ struct slab
 };
 
 template<typename AllocatorT, std::size_t SlabCapacityT, std::size_t... SlabSizesT>
-class slab_allocator : private AllocatorT
+class slab_allocator
 {
     static_assert(SlabCapacityT > 0, "Slab capacity must be greater than zero.");
     static_assert((SlabCapacityT % AllocatorT::alignment) == 0, "Slab capacity must be a multiple of alignment.");
@@ -47,7 +47,7 @@ public:
     static constexpr std::size_t index_for_size(std::size_t size);
     static constexpr std::size_t size_at_index(std::size_t index);
 
-    static constexpr std::size_t alignment = AllocatorT::alignment;
+    static constexpr std::size_t alignment = allocator::alignment;
     static constexpr std::size_t max_size = size_at_index(sizeof...(SlabSizesT) - 1);
 
 public:
@@ -77,6 +77,7 @@ private:
     constexpr void unsafe_deallocate(memory_block& block);
 
     std::array<slab, sizeof...(SlabSizesT)> _slabs{};
+    allocator _allocator;
 };
 
 template<typename AllocatorT, std::size_t SlabCapacityT, std::size_t... SlabSizesT>
@@ -105,7 +106,7 @@ template<typename AllocatorT, std::size_t SlabCapacityT, std::size_t... SlabSize
 template<typename Initializer>
 constexpr void slab_allocator<AllocatorT, SlabCapacityT, SlabSizesT...>::init(Initializer& initializer)
 {
-    allocator::init(initializer);
+    _allocator.init(initializer);
 
     initializer.init(*this);
 }
@@ -131,7 +132,7 @@ template<typename U>
 requires(allocator_traits::has_owns<U>)
 constexpr bool slab_allocator<AllocatorT, SlabCapacityT, SlabSizesT...>::owns(const memory_block& block) const
 {
-    return block.size <= size_at_index(sizeof...(SlabSizesT) - 1) && allocator::owns(block);
+    return block.size <= size_at_index(sizeof...(SlabSizesT) - 1) && _allocator.owns(block);
 }
 
 template<typename AllocatorT, std::size_t SlabCapacityT, std::size_t... SlabSizesT>
@@ -219,7 +220,7 @@ template<typename U>
 requires(allocator_traits::has_deallocate_all<U>)
 constexpr void slab_allocator<AllocatorT, SlabCapacityT, SlabSizesT...>::deallocate_all()
 {
-    AllocatorT::deallocate_all();
+    _allocator.deallocate_all();
 
     _slabs = {};
 }
@@ -227,7 +228,7 @@ constexpr void slab_allocator<AllocatorT, SlabCapacityT, SlabSizesT...>::dealloc
 template<typename AllocatorT, std::size_t SlabCapacityT, std::size_t... SlabSizesT>
 void slab_allocator<AllocatorT, SlabCapacityT, SlabSizesT...>::allocate_for_slab(slab& slab, std::size_t index)
 {
-    memory_block block = AllocatorT::allocate(SlabCapacityT);
+    memory_block block = _allocator.allocate(SlabCapacityT);
 
     if (!block)
     {

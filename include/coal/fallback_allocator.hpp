@@ -8,7 +8,7 @@
 namespace coal {
 
 template<typename PrimaryAllocatorT, typename FallbackAllocatorT>
-class fallback_allocator : private PrimaryAllocatorT, private FallbackAllocatorT
+class fallback_allocator
 {
 public:
     using primary = PrimaryAllocatorT;
@@ -37,6 +37,10 @@ public:
     template<typename U = PrimaryAllocatorT, typename V = FallbackAllocatorT>
     requires(allocator_traits::has_deallocate_all<U> && allocator_traits::has_deallocate_all<V>)
     constexpr void deallocate_all();
+
+private:
+    primary _primary;
+    fallback _fallback;
 };
 
 template<typename PrimaryAllocatorT, typename FallbackAllocatorT>
@@ -49,8 +53,8 @@ template<typename PrimaryAllocatorT, typename FallbackAllocatorT>
 template<typename Initializer>
 constexpr void fallback_allocator<PrimaryAllocatorT, FallbackAllocatorT>::init(Initializer& initializer)
 {
-    primary::init(initializer);
-    fallback::init(initializer);
+    _primary.init(initializer);
+    _primary.init(initializer);
 
     initializer.init(*this);
 }
@@ -63,12 +67,12 @@ constexpr memory_block fallback_allocator<PrimaryAllocatorT, FallbackAllocatorT>
         return nullblk;
     }
 
-    if (memory_block block = primary::allocate(size))
+    if (memory_block block = _primary.allocate(size))
     {
         return block;
     }
 
-    return fallback::allocate(size);
+    return _fallback.allocate(size);
 }
 
 template<typename PrimaryAllocatorT, typename FallbackAllocatorT>
@@ -76,7 +80,7 @@ template<typename U, typename V>
 requires(allocator_traits::has_owns<U> && allocator_traits::has_owns<V>)
 constexpr bool fallback_allocator<PrimaryAllocatorT, FallbackAllocatorT>::owns(const memory_block& block) const
 {
-    return primary::owns(block) || fallback::owns(block);
+    return _primary.owns(block) || _fallback.owns(block);
 }
 
 template<typename PrimaryAllocatorT, typename FallbackAllocatorT>
@@ -86,15 +90,15 @@ constexpr bool fallback_allocator<PrimaryAllocatorT, FallbackAllocatorT>::expand
 {
     if constexpr (allocator_traits::has_expand<primary>)
     {
-        if (primary::owns(block))
+        if (_primary.owns(block))
         {
-            return primary::expand(block, delta);
+            return _primary.expand(block, delta);
         }
     }
 
     if constexpr (allocator_traits::has_expand<fallback>)
     {
-        return fallback::expand(block, delta);
+        return _fallback.expand(block, delta);
     }
 
     return false;
@@ -103,31 +107,31 @@ constexpr bool fallback_allocator<PrimaryAllocatorT, FallbackAllocatorT>::expand
 template<typename PrimaryAllocatorT, typename FallbackAllocatorT>
 constexpr bool fallback_allocator<PrimaryAllocatorT, FallbackAllocatorT>::reallocate(memory_block& block, std::size_t new_size)
 {
-    const bool is_primary_owner = primary::owns(block);
+    const bool is_primary_owner = _primary.owns(block);
 
     if (is_primary_owner)
     {
-        if (auto [success, reallocated] = details::try_default_reallocate<primary>(*this, block, new_size); success)
+        if (auto [success, reallocated] = details::try_default_reallocate(_primary, block, new_size); success)
         {
             return reallocated;
         }
     }
-    else if (auto [success, reallocated] = details::try_default_reallocate<fallback>(*this, block, new_size); success)
+    else if (auto [success, reallocated] = details::try_default_reallocate(_fallback, block, new_size); success)
     {
         return reallocated;
     }
 
     if (is_primary_owner)
     {
-        if (primary::reallocate(block, new_size))
+        if (_primary.reallocate(block, new_size))
         {
             return true;
         }
 
-        return details::reallocate_with_new_allocator<primary, fallback>(*this, *this, block, new_size);
+        return details::reallocate_with_new_allocator(_primary, _fallback, block, new_size);
     }
 
-    return fallback::reallocate(block, new_size);
+    return _fallback.reallocate(block, new_size);
 }
 
 template<typename PrimaryAllocatorT, typename FallbackAllocatorT>
@@ -138,13 +142,13 @@ constexpr void fallback_allocator<PrimaryAllocatorT, FallbackAllocatorT>::deallo
         return;
     }
 
-    if (primary::owns(block))
+    if (_primary.owns(block))
     {
-        primary::deallocate(block);
+        _primary.deallocate(block);
     }
     else
     {
-        fallback::deallocate(block);
+        _fallback.deallocate(block);
     }
 }
 
@@ -153,8 +157,8 @@ template<typename U, typename V>
 requires(allocator_traits::has_deallocate_all<U> && allocator_traits::has_deallocate_all<V>)
 constexpr void fallback_allocator<PrimaryAllocatorT, FallbackAllocatorT>::deallocate_all()
 {
-    primary::deallocate_all();
-    fallback::deallocate_all();
+    _primary.deallocate_all();
+    _fallback.deallocate_all();
 }
 
 } // namespace coal

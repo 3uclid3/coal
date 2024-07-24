@@ -9,7 +9,7 @@
 namespace coal {
 
 template<typename SmallAllocatorT, typename LargeAllocatorT, std::size_t ThresholdT>
-class segregator_allocator : private SmallAllocatorT, private LargeAllocatorT
+class segregator_allocator
 {
 public:
     using small = SmallAllocatorT;
@@ -45,6 +45,9 @@ private:
 
     static_assert(ThresholdT > 0, "Threshold must be greater than 0");
     static_assert(align_up(ThresholdT, alignment) == ThresholdT, "Threshold must be a multiple of the alignment");
+
+    small _small;
+    large _large;
 };
 
 template<typename SmallAllocatorT, typename LargeAllocatorT, std::size_t ThresholdT>
@@ -57,8 +60,8 @@ template<typename SmallAllocatorT, typename LargeAllocatorT, std::size_t Thresho
 template<typename Initializer>
 constexpr void segregator_allocator<SmallAllocatorT, LargeAllocatorT, ThresholdT>::init(Initializer& initializer)
 {
-    small::init(initializer);
-    large::init(initializer);
+    _small.init(initializer);
+    _large.init(initializer);
 
     initializer.init(*this);
 }
@@ -68,10 +71,10 @@ constexpr memory_block segregator_allocator<SmallAllocatorT, LargeAllocatorT, Th
 {
     if (is_small(size))
     {
-        return small::allocate(size);
+        return _small.allocate(size);
     }
 
-    return large::allocate(size);
+    return _large.allocate(size);
 }
 
 template<typename SmallAllocatorT, typename LargeAllocatorT, std::size_t ThresholdT>
@@ -81,10 +84,10 @@ constexpr bool segregator_allocator<SmallAllocatorT, LargeAllocatorT, ThresholdT
 {
     if (is_small(block.size))
     {
-        return small::owns(block);
+        return _small.owns(block);
     }
 
-    return large::owns(block);
+    return _large.owns(block);
 }
 
 template<typename SmallAllocatorT, typename LargeAllocatorT, std::size_t ThresholdT>
@@ -96,12 +99,12 @@ constexpr bool segregator_allocator<SmallAllocatorT, LargeAllocatorT, ThresholdT
     {
         if constexpr (allocator_traits::has_expand<SmallAllocatorT>)
         {
-            return small::expand(block, delta);
+            return _small.expand(block, delta);
         }
     }
     else if constexpr (allocator_traits::has_expand<LargeAllocatorT>)
     {
-        return large::expand(block, delta);
+        return _large.expand(block, delta);
     }
 
     return false;
@@ -120,19 +123,19 @@ constexpr bool segregator_allocator<SmallAllocatorT, LargeAllocatorT, ThresholdT
     {
         if (is_small(new_size))
         {
-            return small::reallocate(block, new_size);
+            return _small.reallocate(block, new_size);
         }
 
-        return details::reallocate_with_new_allocator<small, large>(*this, *this, block, new_size);
+        return details::reallocate_with_new_allocator(_small, _large, block, new_size);
     }
 
     // from large block to small block?
     if (is_small(new_size))
     {
-        return details::reallocate_with_new_allocator<large, small>(*this, *this, block, new_size);
+        return details::reallocate_with_new_allocator(_large, _small, block, new_size);
     }
 
-    return large::reallocate(block, new_size);
+    return _large.reallocate(block, new_size);
 }
 
 template<typename SmallAllocatorT, typename LargeAllocatorT, std::size_t ThresholdT>
@@ -140,11 +143,11 @@ constexpr void segregator_allocator<SmallAllocatorT, LargeAllocatorT, ThresholdT
 {
     if (is_small(block.size))
     {
-        small::deallocate(block);
+        _small.deallocate(block);
     }
     else
     {
-        large::deallocate(block);
+        _large.deallocate(block);
     }
 }
 
@@ -153,8 +156,8 @@ template<typename U, typename V>
 requires(allocator_traits::has_deallocate_all<U> && allocator_traits::has_deallocate_all<V>)
 constexpr void segregator_allocator<SmallAllocatorT, LargeAllocatorT, ThresholdT>::deallocate_all()
 {
-    small::deallocate_all();
-    large::deallocate_all();
+    _small.deallocate_all();
+    _large.deallocate_all();
 }
 
 template<typename SmallAllocatorT, typename LargeAllocatorT, std::size_t ThresholdT>
