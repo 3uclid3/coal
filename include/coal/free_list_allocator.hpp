@@ -32,6 +32,9 @@ public:
 public:
     constexpr std::size_t get_alignment() const;
 
+    [[nodiscard]] constexpr const allocator& get_allocator() const;
+    [[nodiscard]] constexpr allocator& get_allocator();
+
     template<typename Initializer>
     constexpr void init(Initializer& initializer);
 
@@ -61,6 +64,18 @@ template<typename AllocatorT, typename StrategyT>
 constexpr std::size_t free_list_allocator<AllocatorT, StrategyT>::get_alignment() const
 {
     return alignment;
+}
+
+template<typename AllocatorT, typename StrategyT>
+constexpr const free_list_allocator<AllocatorT, StrategyT>::allocator& free_list_allocator<AllocatorT, StrategyT>::get_allocator() const
+{
+    return _allocator;
+}
+
+template<typename AllocatorT, typename StrategyT>
+constexpr free_list_allocator<AllocatorT, StrategyT>::allocator& free_list_allocator<AllocatorT, StrategyT>::get_allocator()
+{
+    return _allocator;
 }
 
 template<typename AllocatorT, typename StrategyT>

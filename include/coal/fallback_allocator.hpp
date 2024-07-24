@@ -18,6 +18,12 @@ public:
 public:
     [[nodiscard]] constexpr std::size_t get_alignment() const;
 
+    [[nodiscard]] constexpr const primary& get_primary_allocator() const;
+    [[nodiscard]] constexpr primary& get_primary_allocator();
+
+    [[nodiscard]] constexpr const fallback& get_fallback_allocator() const;
+    [[nodiscard]] constexpr fallback& get_fallback_allocator();
+
     template<typename Initializer>
     constexpr void init(Initializer& initializer);
 
@@ -46,6 +52,30 @@ template<typename PrimaryAllocatorT, typename FallbackAllocatorT>
 constexpr std::size_t fallback_allocator<PrimaryAllocatorT, FallbackAllocatorT>::get_alignment() const
 {
     return alignment;
+}
+
+template<typename PrimaryAllocatorT, typename FallbackAllocatorT>
+constexpr const fallback_allocator<PrimaryAllocatorT, FallbackAllocatorT>::primary& fallback_allocator<PrimaryAllocatorT, FallbackAllocatorT>::get_primary_allocator() const
+{
+    return _primary;
+}
+
+template<typename PrimaryAllocatorT, typename FallbackAllocatorT>
+constexpr fallback_allocator<PrimaryAllocatorT, FallbackAllocatorT>::primary& fallback_allocator<PrimaryAllocatorT, FallbackAllocatorT>::get_primary_allocator()
+{
+    return _primary;
+}
+
+template<typename PrimaryAllocatorT, typename FallbackAllocatorT>
+constexpr const fallback_allocator<PrimaryAllocatorT, FallbackAllocatorT>::fallback& fallback_allocator<PrimaryAllocatorT, FallbackAllocatorT>::get_fallback_allocator() const
+{
+    return _fallback;
+}
+
+template<typename PrimaryAllocatorT, typename FallbackAllocatorT>
+constexpr fallback_allocator<PrimaryAllocatorT, FallbackAllocatorT>::fallback& fallback_allocator<PrimaryAllocatorT, FallbackAllocatorT>::get_fallback_allocator()
+{
+    return _fallback;
 }
 
 template<typename PrimaryAllocatorT, typename FallbackAllocatorT>

@@ -10,8 +10,6 @@ template<std::size_t SizeT, std::size_t AlignmentT = default_alignment>
 class stack_allocator
 {
 public:
-    using allocator = stack_allocator<SizeT, AlignmentT>;
-
     static constexpr std::size_t alignment = AlignmentT;
     static constexpr std::size_t max_size = SizeT;
 

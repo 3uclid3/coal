@@ -52,6 +52,9 @@ public:
 public:
     [[nodiscard]] constexpr std::size_t get_alignment() const;
 
+    [[nodiscard]] constexpr const allocator& get_allocator() const;
+    [[nodiscard]] constexpr allocator& get_allocator();
+
     template<typename Initializer>
     constexpr void init(Initializer& initializer);
 
@@ -108,6 +111,18 @@ constexpr void slab_allocator<AllocatorT, SlabCapacityT, SlabSizesT...>::init(In
     _allocator.init(initializer);
 
     initializer.init(*this);
+}
+
+template<typename AllocatorT, std::size_t SlabCapacityT, std::size_t... SlabSizesT>
+constexpr const slab_allocator<AllocatorT, SlabCapacityT, SlabSizesT...>::allocator& slab_allocator<AllocatorT, SlabCapacityT, SlabSizesT...>::get_allocator() const
+{
+    return _allocator;
+}
+
+template<typename AllocatorT, std::size_t SlabCapacityT, std::size_t... SlabSizesT>
+constexpr slab_allocator<AllocatorT, SlabCapacityT, SlabSizesT...>::allocator& slab_allocator<AllocatorT, SlabCapacityT, SlabSizesT...>::get_allocator()
+{
+    return _allocator;
 }
 
 template<typename AllocatorT, std::size_t SlabCapacityT, std::size_t... SlabSizesT>

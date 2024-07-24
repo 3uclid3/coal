@@ -18,7 +18,13 @@ public:
     static constexpr std::size_t threshold = ThresholdT;
 
 public:
-    constexpr std::size_t get_alignment() const;
+    [[nodiscard]] constexpr std::size_t get_alignment() const;
+
+    [[nodiscard]] constexpr const small& get_small_allocator() const;
+    [[nodiscard]] constexpr small& get_small_allocator();
+
+    [[nodiscard]] constexpr const large& get_large_allocator() const;
+    [[nodiscard]] constexpr large& get_large_allocator();
 
     template<typename Initializer>
     constexpr void init(Initializer& initializer);
@@ -53,6 +59,30 @@ template<typename SmallAllocatorT, typename LargeAllocatorT, std::size_t Thresho
 constexpr std::size_t segregator_allocator<SmallAllocatorT, LargeAllocatorT, ThresholdT>::get_alignment() const
 {
     return alignment;
+}
+
+template<typename SmallAllocatorT, typename LargeAllocatorT, std::size_t ThresholdT>
+constexpr const segregator_allocator<SmallAllocatorT, LargeAllocatorT, ThresholdT>::small& segregator_allocator<SmallAllocatorT, LargeAllocatorT, ThresholdT>::get_small_allocator() const
+{
+    return _small;
+}
+
+template<typename SmallAllocatorT, typename LargeAllocatorT, std::size_t ThresholdT>
+constexpr segregator_allocator<SmallAllocatorT, LargeAllocatorT, ThresholdT>::small& segregator_allocator<SmallAllocatorT, LargeAllocatorT, ThresholdT>::get_small_allocator()
+{
+    return _small;
+}
+
+template<typename SmallAllocatorT, typename LargeAllocatorT, std::size_t ThresholdT>
+constexpr const segregator_allocator<SmallAllocatorT, LargeAllocatorT, ThresholdT>::large& segregator_allocator<SmallAllocatorT, LargeAllocatorT, ThresholdT>::get_large_allocator() const
+{
+    return _large;
+}
+
+template<typename SmallAllocatorT, typename LargeAllocatorT, std::size_t ThresholdT>
+constexpr segregator_allocator<SmallAllocatorT, LargeAllocatorT, ThresholdT>::large& segregator_allocator<SmallAllocatorT, LargeAllocatorT, ThresholdT>::get_large_allocator()
+{
+    return _large;
 }
 
 template<typename SmallAllocatorT, typename LargeAllocatorT, std::size_t ThresholdT>
