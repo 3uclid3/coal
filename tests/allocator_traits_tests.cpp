@@ -1,7 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <coal/allocator_traits.hpp>
-#include <coal/def.hpp>
 #include <coal/memory_block.hpp>
 
 namespace coal::allocator_traits {

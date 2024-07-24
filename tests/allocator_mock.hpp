@@ -1,7 +1,6 @@
 #pragma once
 
 #include <coal/alignment.hpp>
-#include <coal/def.hpp>
 #include <coal/memory_block.hpp>
 
 namespace coal::mock {
@@ -16,9 +15,13 @@ struct basic_minimal_allocator
         return alignment;
     }
 
-    [[nodiscard]] memory_block allocate(std::size_t size)
+    template<typename Initializer>
+    void init(Initializer&)
     {
-        COAL_UNUSED(size);
+    }
+
+    [[nodiscard]] memory_block allocate([[maybe_unused]] std::size_t size)
+    {
         if (!will_allocate)
         {
             return nullblk;
@@ -28,9 +31,8 @@ struct basic_minimal_allocator
         return allocate_block;
     }
 
-    bool reallocate(memory_block& block, std::size_t new_size)
+    bool reallocate(memory_block& block, [[maybe_unused]] std::size_t new_size)
     {
-        COAL_UNUSED(new_size);
         if (will_reallocate)
         {
             block = reallocate_block;
@@ -75,16 +77,14 @@ struct basic_allocator : basic_minimal_allocator<basic_allocator<TagT>>
 {
     using super = basic_minimal_allocator<basic_allocator<TagT>>;
 
-    [[nodiscard]] bool owns(const memory_block& block) const
+    [[nodiscard]] bool owns([[maybe_unused]] const memory_block& block) const
     {
-        COAL_UNUSED(block);
         ++owns_count;
         return will_owns;
     }
 
-    bool expand(memory_block& block, std::size_t delta)
+    bool expand(memory_block& block, [[maybe_unused]] std::size_t delta)
     {
-        COAL_UNUSED(delta);
         if (will_expand)
         {
             block = expand_block;

@@ -3,7 +3,6 @@
 #include <catch2/catch_template_test_macros.hpp>
 
 #include <coal/affix_allocator.hpp>
-#include <coal/def.hpp>
 #include <coal/stack_allocator.hpp>
 
 #include <allocator_fixture.hpp>

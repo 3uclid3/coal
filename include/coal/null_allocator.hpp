@@ -2,7 +2,6 @@
 
 #include <cassert>
 
-#include <coal/def.hpp>
 #include <coal/memory_block.hpp>
 
 namespace coal {
@@ -38,10 +37,8 @@ constexpr void null_allocator::init(Initializer& initializer)
     initializer.init(*this);
 }
 
-constexpr memory_block null_allocator::allocate(std::size_t size)
+constexpr memory_block null_allocator::allocate([[maybe_unused]] std::size_t size)
 {
-    COAL_UNUSED(size);
-
     return nullblk;
 }
 
@@ -50,28 +47,20 @@ constexpr bool null_allocator::owns(const memory_block& block) const
     return !block;
 }
 
-constexpr bool null_allocator::expand(memory_block& block, std::size_t delta)
+constexpr bool null_allocator::expand([[maybe_unused]] memory_block& block, [[maybe_unused]] std::size_t delta)
 {
-    COAL_UNUSED(block);
-    COAL_UNUSED(delta);
-
     assert(!block);
     return false;
 }
 
-constexpr bool null_allocator::reallocate(memory_block& block, std::size_t new_size)
+constexpr bool null_allocator::reallocate([[maybe_unused]] memory_block& block, [[maybe_unused]] std::size_t new_size)
 {
-    COAL_UNUSED(block);
-    COAL_UNUSED(new_size);
-
     assert(!block);
     return false;
 }
 
-constexpr void null_allocator::deallocate(memory_block& block)
+constexpr void null_allocator::deallocate([[maybe_unused]] memory_block& block)
 {
-    COAL_UNUSED(block);
-
     assert(!block);
 }
 

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <coal/def.hpp>
-
 namespace coal::mock {
 
 template<typename TagT, typename SizeT = std::size_t>

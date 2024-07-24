@@ -3,19 +3,14 @@
 #include <array>
 #include <concepts>
 
-#include <coal/def.hpp>
-
 namespace coal {
 
 struct assert_memory_corruption_reporter
 {
     template<std::integral T>
-    static void report(const void* corrupted_ptr, T expected, T actual)
+    static void report([[maybe_unused]] const void* corrupted_ptr, [[maybe_unused]] T expected, [[maybe_unused]] T actual)
     {
         assert(expected == actual);
-        COAL_UNUSED(corrupted_ptr);
-        COAL_UNUSED(expected);
-        COAL_UNUSED(actual);
     }
 };
 

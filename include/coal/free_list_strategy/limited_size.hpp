@@ -1,7 +1,5 @@
 #pragma once
 
-#include <coal/def.hpp>
-
 namespace coal {
 
 struct free_list;

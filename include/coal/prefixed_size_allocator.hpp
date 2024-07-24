@@ -1,7 +1,6 @@
 #pragma once
 
 #include <coal/affix_allocator.hpp>
-#include <coal/def.hpp>
 #include <coal/details/allocator_reallocation.hpp>
 #include <coal/memory_block.hpp>
 

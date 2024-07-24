@@ -6,7 +6,6 @@
 
 #include <coal/alignment.hpp>
 #include <coal/allocator_traits.hpp>
-#include <coal/def.hpp>
 #include <coal/memory_block.hpp>
 
 namespace coal {
@@ -296,8 +295,7 @@ struct basic_allocator_fixture
             {
                 for (std::size_t i = 0; i < 10; ++i)
                 {
-                    memory_block block = allocator.allocate(aligned_size);
-                    COAL_UNUSED(block);
+                    [[maybe_unused]] memory_block block = allocator.allocate(aligned_size);
                 }
 
                 allocator.deallocate_all();

@@ -32,8 +32,7 @@ struct memory_corruption_detector_fixture
 TEST_CASE("memory_corruption_detector does not report if no corruption", "[memory_corruption_detector], [affix]")
 {
     {
-        test_detector detector;
-        COAL_UNUSED(detector);
+        [[maybe_unused]] test_detector detector;
     }
 
     CHECK_FALSE(memory_corruption_reporter::has_reported);

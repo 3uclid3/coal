@@ -3,7 +3,9 @@
 #include <concepts>
 #include <type_traits>
 
-#include <coal/def.hpp>
+#ifndef COAL_DEFAULT_ALIGNMENT
+#define COAL_DEFAULT_ALIGNMENT 8
+#endif
 
 namespace coal {
 

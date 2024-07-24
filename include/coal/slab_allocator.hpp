@@ -3,7 +3,6 @@
 #include <array>
 
 #include <coal/allocator_traits.hpp>
-#include <coal/def.hpp>
 #include <coal/details/allocator_reallocation.hpp>
 #include <coal/memory_block.hpp>
 

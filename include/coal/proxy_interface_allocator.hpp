@@ -4,7 +4,6 @@
 #include <functional>
 
 #include <coal/allocator_traits.hpp>
-#include <coal/def.hpp>
 #include <coal/memory_block.hpp>
 #include <coal/null_allocator.hpp>
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <coal/alignment.hpp>
-#include <coal/def.hpp>
 #include <coal/details/allocator_reallocation.hpp>
 #include <coal/memory_block.hpp>
 
