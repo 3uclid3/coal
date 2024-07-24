@@ -20,13 +20,13 @@ public:
 
     constexpr ~proxy_interface_allocator();
 
-    HEDLEY_WARN_UNUSED_RESULT constexpr std::size_t get_alignment() const;
+    [[nodiscard]] constexpr std::size_t get_alignment() const;
 
     template<typename Initializer>
     constexpr void init(Initializer& initializer);
 
-    HEDLEY_WARN_UNUSED_RESULT constexpr memory_block allocate(std::size_t size);
-    HEDLEY_WARN_UNUSED_RESULT constexpr bool owns(const memory_block& block) const;
+    [[nodiscard]] constexpr memory_block allocate(std::size_t size);
+    [[nodiscard]] constexpr bool owns(const memory_block& block) const;
     constexpr bool expand(memory_block& block, std::size_t delta);
     constexpr bool reallocate(memory_block& block, std::size_t new_size);
     constexpr void deallocate(memory_block& block);
@@ -44,12 +44,12 @@ private:
 
         virtual ~interface() = default;
 
-        HEDLEY_WARN_UNUSED_RESULT virtual std::size_t get_alignment() const = 0;
+        [[nodiscard]] virtual std::size_t get_alignment() const = 0;
 
         virtual void init(const initializer_t& initializer) = 0;
 
-        HEDLEY_WARN_UNUSED_RESULT virtual memory_block allocate(std::size_t size) = 0;
-        HEDLEY_WARN_UNUSED_RESULT virtual bool owns(const memory_block& block) const = 0;
+        [[nodiscard]] virtual memory_block allocate(std::size_t size) = 0;
+        [[nodiscard]] virtual bool owns(const memory_block& block) const = 0;
         virtual bool expand(memory_block& block, std::size_t delta) = 0;
         virtual bool reallocate(memory_block& block, std::size_t new_size) = 0;
         virtual void deallocate(memory_block& block) = 0;
@@ -61,12 +61,12 @@ private:
     {
         constexpr explicit implementation(AllocatorT& allocator);
 
-        HEDLEY_WARN_UNUSED_RESULT std::size_t get_alignment() const override;
+        [[nodiscard]] std::size_t get_alignment() const override;
 
         void init(const initializer_t& initializer) override;
 
-        HEDLEY_WARN_UNUSED_RESULT memory_block allocate(std::size_t size) override;
-        HEDLEY_WARN_UNUSED_RESULT bool owns(const memory_block& block) const override;
+        [[nodiscard]] memory_block allocate(std::size_t size) override;
+        [[nodiscard]] bool owns(const memory_block& block) const override;
         bool expand(memory_block& block, std::size_t delta) override;
         bool reallocate(memory_block& block, std::size_t new_size) override;
         void deallocate(memory_block& block) override;

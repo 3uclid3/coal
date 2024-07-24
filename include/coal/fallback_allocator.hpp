@@ -17,16 +17,16 @@ public:
     static constexpr std::size_t alignment = primary::alignment > fallback::alignment ? primary::alignment : fallback::alignment;
 
 public:
-    HEDLEY_WARN_UNUSED_RESULT constexpr std::size_t get_alignment() const;
+    [[nodiscard]] constexpr std::size_t get_alignment() const;
 
     template<typename Initializer>
     constexpr void init(Initializer& initializer);
 
-    HEDLEY_WARN_UNUSED_RESULT constexpr memory_block allocate(std::size_t size);
+    [[nodiscard]] constexpr memory_block allocate(std::size_t size);
 
     template<typename U = PrimaryAllocatorT, typename V = FallbackAllocatorT>
     requires(allocator_traits::has_owns<U> && allocator_traits::has_owns<V>)
-    HEDLEY_WARN_UNUSED_RESULT constexpr bool owns(const memory_block& block) const;
+    [[nodiscard]] constexpr bool owns(const memory_block& block) const;
 
     template<typename U = PrimaryAllocatorT, typename V = FallbackAllocatorT>
     requires(allocator_traits::has_expand<U> || allocator_traits::has_expand<V>)

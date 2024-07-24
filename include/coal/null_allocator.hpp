@@ -13,13 +13,13 @@ public:
     static constexpr std::size_t alignment = 64 * 1024;
 
 public:
-    HEDLEY_WARN_UNUSED_RESULT constexpr std::size_t get_alignment() const;
+    [[nodiscard]] constexpr std::size_t get_alignment() const;
 
     template<typename Initializer>
     constexpr void init(Initializer& initializer);
 
-    HEDLEY_WARN_UNUSED_RESULT constexpr memory_block allocate(std::size_t size);
-    HEDLEY_WARN_UNUSED_RESULT constexpr bool owns(const memory_block& block) const;
+    [[nodiscard]] constexpr memory_block allocate(std::size_t size);
+    [[nodiscard]] constexpr bool owns(const memory_block& block) const;
 
     constexpr bool expand(memory_block& block, std::size_t delta);
     constexpr bool reallocate(memory_block& block, std::size_t new_size);

@@ -42,14 +42,6 @@ std::cout << "Allocated ptr=" << blk.buffer << " of size " << blk.size;
 allocator.deallocate(blk);
 ```
 
-## Requirements
-
-To use Coal, the following dependencies are required:
-
-- Hedley: A C/C++ header-only library for feature detection and portable compiler attributes.
-
-Include Hedley in your project to ensure compatibility with various compilers and platforms. You can find Hedley on its [GitHub repository](https://github.com/nemequ/hedley).
-
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.

@@ -11,12 +11,12 @@ struct basic_minimal_allocator
 {
     static constexpr std::size_t alignment = default_alignment;
 
-    HEDLEY_WARN_UNUSED_RESULT std::size_t get_alignment()
+    [[nodiscard]] std::size_t get_alignment()
     {
         return alignment;
     }
 
-    HEDLEY_WARN_UNUSED_RESULT memory_block allocate(std::size_t size)
+    [[nodiscard]] memory_block allocate(std::size_t size)
     {
         COAL_UNUSED(size);
         if (!will_allocate)
@@ -75,7 +75,7 @@ struct basic_allocator : basic_minimal_allocator<basic_allocator<TagT>>
 {
     using super = basic_minimal_allocator<basic_allocator<TagT>>;
 
-    HEDLEY_WARN_UNUSED_RESULT bool owns(const memory_block& block) const
+    [[nodiscard]] bool owns(const memory_block& block) const
     {
         COAL_UNUSED(block);
         ++owns_count;

@@ -13,8 +13,8 @@ struct empty_allocator
 class non_empty_allocator
 {
 public:
-    HEDLEY_WARN_UNUSED_RESULT constexpr memory_block allocate(std::size_t) { return nullblk; }
-    HEDLEY_WARN_UNUSED_RESULT constexpr bool owns(const memory_block&) const { return false; }
+    [[nodiscard]] constexpr memory_block allocate(std::size_t) { return nullblk; }
+    [[nodiscard]] constexpr bool owns(const memory_block&) const { return false; }
     constexpr bool expand(memory_block&, std::size_t) { return false; }
     constexpr bool reallocate(memory_block&, std::size_t) { return false; }
     constexpr void deallocate(memory_block&) {}

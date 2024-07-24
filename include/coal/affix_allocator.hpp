@@ -34,16 +34,16 @@ public:
     static constexpr bool has_suffix = suffix_size > 0;
 
 public:
-    HEDLEY_WARN_UNUSED_RESULT constexpr size_t get_alignment() const;
+    [[nodiscard]] constexpr size_t get_alignment() const;
 
     template<typename Initializer>
     constexpr void init(Initializer& initializer);
 
-    HEDLEY_WARN_UNUSED_RESULT constexpr memory_block allocate(size_t size);
+    [[nodiscard]] constexpr memory_block allocate(size_t size);
 
     template<typename U = AllocatorT>
     requires(allocator_traits::has_owns<U>)
-    HEDLEY_WARN_UNUSED_RESULT constexpr bool owns(const memory_block& block) const;
+    [[nodiscard]] constexpr bool owns(const memory_block& block) const;
 
     template<typename U = AllocatorT>
     requires(allocator_traits::has_expand<U>)
@@ -126,7 +126,7 @@ private:
 };
 
 template<typename AllocatorT, typename PrefixT, typename SuffixT>
-HEDLEY_WARN_UNUSED_RESULT constexpr size_t affix_allocator<AllocatorT, PrefixT, SuffixT>::get_alignment() const
+[[nodiscard]] constexpr size_t affix_allocator<AllocatorT, PrefixT, SuffixT>::get_alignment() const
 {
     return alignment;
 }

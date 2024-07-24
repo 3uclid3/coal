@@ -24,11 +24,11 @@ public:
     template<typename Initializer>
     constexpr void init(Initializer& initializer);
 
-    HEDLEY_WARN_UNUSED_RESULT constexpr memory_block allocate(std::size_t size);
+    [[nodiscard]] constexpr memory_block allocate(std::size_t size);
 
     template<typename U = SmallAllocatorT, typename V = LargeAllocatorT>
     requires(allocator_traits::has_owns<U> && allocator_traits::has_owns<V>)
-    HEDLEY_WARN_UNUSED_RESULT constexpr bool owns(const memory_block& block) const;
+    [[nodiscard]] constexpr bool owns(const memory_block& block) const;
 
     template<typename U = SmallAllocatorT, typename V = LargeAllocatorT>
     requires(allocator_traits::has_expand<U> || allocator_traits::has_expand<V>)
