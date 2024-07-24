@@ -15,6 +15,9 @@ public:
 public:
     HEDLEY_WARN_UNUSED_RESULT constexpr std::size_t get_alignment() const;
 
+    template<typename Initializer>
+    constexpr void init(Initializer& initializer);
+
     HEDLEY_WARN_UNUSED_RESULT constexpr memory_block allocate(std::size_t size);
     HEDLEY_WARN_UNUSED_RESULT constexpr bool owns(const memory_block& block) const;
 
@@ -27,6 +30,12 @@ public:
 constexpr std::size_t null_allocator::get_alignment() const
 {
     return alignment;
+}
+
+template<typename Initializer>
+constexpr void null_allocator::init(Initializer& initializer)
+{
+    initializer.init(*this);
 }
 
 constexpr memory_block null_allocator::allocate(std::size_t size)

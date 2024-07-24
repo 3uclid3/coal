@@ -18,6 +18,9 @@ public:
 public:
     HEDLEY_WARN_UNUSED_RESULT constexpr std::size_t get_alignment() const;
 
+    template<typename Initializer>
+    constexpr void init(Initializer& initializer);
+
     HEDLEY_WARN_UNUSED_RESULT constexpr memory_block allocate(std::size_t size);
 
     template<typename U = AllocatorT>
@@ -40,6 +43,15 @@ template<typename AllocatorT>
 constexpr std::size_t prefixed_size_allocator<AllocatorT>::get_alignment() const
 {
     return alignment;
+}
+
+template<typename AllocatorT>
+template<typename Initializer>
+constexpr void prefixed_size_allocator<AllocatorT>::init(Initializer& initializer)
+{
+    super::init(initializer);
+
+    initializer.init(*this);
 }
 
 template<typename AllocatorT>

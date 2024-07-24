@@ -51,13 +51,16 @@ public:
     static constexpr std::size_t max_size = size_at_index(sizeof...(SlabSizesT) - 1);
 
 public:
-    [[nodiscard]] constexpr std::size_t get_alignment() const;
+    HEDLEY_WARN_UNUSED_RESULT constexpr std::size_t get_alignment() const;
 
-    [[nodiscard]] constexpr memory_block allocate(std::size_t size);
+    template<typename Initializer>
+    constexpr void init(Initializer& initializer);
+
+    HEDLEY_WARN_UNUSED_RESULT constexpr memory_block allocate(std::size_t size);
 
     template<typename U = AllocatorT>
     requires(allocator_traits::has_owns<U>)
-    [[nodiscard]] constexpr bool owns(const memory_block& block) const;
+    HEDLEY_WARN_UNUSED_RESULT constexpr bool owns(const memory_block& block) const;
 
     constexpr bool expand(memory_block& block, std::size_t delta);
     constexpr bool reallocate(memory_block& block, std::size_t new_size);
@@ -70,7 +73,7 @@ public:
 private:
     void allocate_for_slab(slab& slab, std::size_t index);
 
-    [[nodiscard]] constexpr memory_block unsafe_allocate(std::size_t size);
+    HEDLEY_WARN_UNUSED_RESULT constexpr memory_block unsafe_allocate(std::size_t size);
     constexpr void unsafe_deallocate(memory_block& block);
 
     std::array<slab, sizeof...(SlabSizesT)> _slabs{};
@@ -96,6 +99,15 @@ template<typename AllocatorT, std::size_t SlabCapacityT, std::size_t... SlabSize
 constexpr std::size_t slab_allocator<AllocatorT, SlabCapacityT, SlabSizesT...>::get_alignment() const
 {
     return alignment;
+}
+
+template<typename AllocatorT, std::size_t SlabCapacityT, std::size_t... SlabSizesT>
+template<typename Initializer>
+constexpr void slab_allocator<AllocatorT, SlabCapacityT, SlabSizesT...>::init(Initializer& initializer)
+{
+    allocator::init(initializer);
+
+    initializer.init(*this);
 }
 
 template<typename AllocatorT, std::size_t SlabCapacityT, std::size_t... SlabSizesT>

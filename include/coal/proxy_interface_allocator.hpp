@@ -22,6 +22,9 @@ public:
 
     HEDLEY_WARN_UNUSED_RESULT constexpr std::size_t get_alignment() const;
 
+    template<typename Initializer>
+    constexpr void init(Initializer& initializer);
+
     HEDLEY_WARN_UNUSED_RESULT constexpr memory_block allocate(std::size_t size);
     HEDLEY_WARN_UNUSED_RESULT constexpr bool owns(const memory_block& block) const;
     constexpr bool expand(memory_block& block, std::size_t delta);
@@ -37,9 +40,13 @@ public:
 private:
     struct interface
     {
+        using initializer_t = std::function<void(void*)>;
+
         virtual ~interface() = default;
 
         HEDLEY_WARN_UNUSED_RESULT virtual std::size_t get_alignment() const = 0;
+
+        virtual void init(const initializer_t& initializer) = 0;
 
         HEDLEY_WARN_UNUSED_RESULT virtual memory_block allocate(std::size_t size) = 0;
         HEDLEY_WARN_UNUSED_RESULT virtual bool owns(const memory_block& block) const = 0;
@@ -55,6 +62,8 @@ private:
         constexpr explicit implementation(AllocatorT& allocator);
 
         HEDLEY_WARN_UNUSED_RESULT std::size_t get_alignment() const override;
+
+        void init(const initializer_t& initializer) override;
 
         HEDLEY_WARN_UNUSED_RESULT memory_block allocate(std::size_t size) override;
         HEDLEY_WARN_UNUSED_RESULT bool owns(const memory_block& block) const override;
@@ -83,6 +92,11 @@ template<typename AllocatorT>
 std::size_t proxy_interface_allocator::implementation<AllocatorT>::get_alignment() const
 {
     return allocator.get().get_alignment();
+}
+template<typename AllocatorT>
+void proxy_interface_allocator::implementation<AllocatorT>::init(const initializer_t& initializer)
+{
+    initializer(&allocator.get());
 }
 
 template<typename AllocatorT>
@@ -147,43 +161,51 @@ constexpr proxy_interface_allocator::~proxy_interface_allocator()
 
 constexpr std::size_t proxy_interface_allocator::get_alignment() const
 {
-    assert(_interface);
+    assert(has_allocator());
     return _interface->get_alignment();
+}
+
+template<typename Initializer>
+constexpr void proxy_interface_allocator::init(Initializer& initializer)
+{
+    // TODO init interface
+
+    initializer.init(*this);
 }
 
 constexpr memory_block proxy_interface_allocator::allocate(std::size_t size)
 {
-    assert(_interface);
+    assert(has_allocator());
     return _interface->allocate(size);
 }
 
 constexpr bool proxy_interface_allocator::owns(const memory_block& block) const
 {
-    assert(_interface);
+    assert(has_allocator());
     return _interface->owns(block);
 }
 
 constexpr bool proxy_interface_allocator::expand(memory_block& block, std::size_t delta)
 {
-    assert(_interface);
+    assert(has_allocator());
     return _interface->expand(block, delta);
 }
 
 constexpr bool proxy_interface_allocator::reallocate(memory_block& block, std::size_t new_size)
 {
-    assert(_interface);
+    assert(has_allocator());
     return _interface->reallocate(block, new_size);
 }
 
 constexpr void proxy_interface_allocator::deallocate(memory_block& block)
 {
-    assert(_interface);
+    assert(has_allocator());
     _interface->deallocate(block);
 }
 
 constexpr void proxy_interface_allocator::deallocate_all()
 {
-    assert(_interface);
+    assert(has_allocator());
     _interface->deallocate_all();
 }
 
@@ -197,7 +219,7 @@ constexpr void proxy_interface_allocator::set_allocator(AllocatorT& allocator)
 
 constexpr void proxy_interface_allocator::unset_allocator()
 {
-    if (_interface)
+    if (has_allocator())
     {
         _interface->~interface();
         _interface = nullptr;

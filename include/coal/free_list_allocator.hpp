@@ -33,11 +33,14 @@ public:
 public:
     constexpr std::size_t get_alignment() const;
 
-    [[nodiscard]] constexpr memory_block allocate(std::size_t size);
+    template<typename Initializer>
+    constexpr void init(Initializer& initializer);
+
+    HEDLEY_WARN_UNUSED_RESULT constexpr memory_block allocate(std::size_t size);
 
     template<typename U = AllocatorT>
     requires(allocator_traits::has_owns<U>)
-    [[nodiscard]] constexpr bool owns(const memory_block& block) const;
+    HEDLEY_WARN_UNUSED_RESULT constexpr bool owns(const memory_block& block) const;
 
     template<typename U = AllocatorT>
     requires(allocator_traits::has_expand<U>)
@@ -57,6 +60,16 @@ template<typename AllocatorT, typename StrategyT>
 constexpr std::size_t free_list_allocator<AllocatorT, StrategyT>::get_alignment() const
 {
     return alignment;
+}
+
+template<typename AllocatorT, typename StrategyT>
+template<typename Initializer>
+constexpr void free_list_allocator<AllocatorT, StrategyT>::init(Initializer& initializer)
+{
+    allocator::init(initializer);
+    strategy::init(initializer);
+
+    initializer.init(*this);
 }
 
 template<typename AllocatorT, typename StrategyT>

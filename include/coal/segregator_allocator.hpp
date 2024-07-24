@@ -21,11 +21,14 @@ public:
 public:
     constexpr std::size_t get_alignment() const;
 
-    [[nodiscard]] constexpr memory_block allocate(std::size_t size);
+    template<typename Initializer>
+    constexpr void init(Initializer& initializer);
+
+    HEDLEY_WARN_UNUSED_RESULT constexpr memory_block allocate(std::size_t size);
 
     template<typename U = SmallAllocatorT, typename V = LargeAllocatorT>
     requires(allocator_traits::has_owns<U> && allocator_traits::has_owns<V>)
-    [[nodiscard]] constexpr bool owns(const memory_block& block) const;
+    HEDLEY_WARN_UNUSED_RESULT constexpr bool owns(const memory_block& block) const;
 
     template<typename U = SmallAllocatorT, typename V = LargeAllocatorT>
     requires(allocator_traits::has_expand<U> || allocator_traits::has_expand<V>)
@@ -48,6 +51,16 @@ template<typename SmallAllocatorT, typename LargeAllocatorT, std::size_t Thresho
 constexpr std::size_t segregator_allocator<SmallAllocatorT, LargeAllocatorT, ThresholdT>::get_alignment() const
 {
     return alignment;
+}
+
+template<typename SmallAllocatorT, typename LargeAllocatorT, std::size_t ThresholdT>
+template<typename Initializer>
+constexpr void segregator_allocator<SmallAllocatorT, LargeAllocatorT, ThresholdT>::init(Initializer& initializer)
+{
+    small::init(initializer);
+    large::init(initializer);
+
+    initializer.init(*this);
 }
 
 template<typename SmallAllocatorT, typename LargeAllocatorT, std::size_t ThresholdT>

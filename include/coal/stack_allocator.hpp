@@ -19,6 +19,9 @@ public:
 public:
     constexpr std::size_t get_alignment() const;
 
+    template<typename Initializer>
+    constexpr void init(Initializer& initializer);
+
     HEDLEY_WARN_UNUSED_RESULT constexpr memory_block allocate(std::size_t size);
     HEDLEY_WARN_UNUSED_RESULT constexpr bool owns(const memory_block& block) const;
     constexpr bool expand(memory_block& block, std::size_t delta);
@@ -38,6 +41,13 @@ template<std::size_t SizeT, std::size_t AlignmentT>
 constexpr std::size_t stack_allocator<SizeT, AlignmentT>::get_alignment() const
 {
     return AlignmentT;
+}
+
+template<std::size_t SizeT, std::size_t AlignmentT>
+template<typename Initializer>
+constexpr void stack_allocator<SizeT, AlignmentT>::init(Initializer& initializer)
+{
+    initializer.init(*this);
 }
 
 template<std::size_t SizeT, std::size_t AlignmentT>

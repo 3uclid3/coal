@@ -36,6 +36,9 @@ public:
 public:
     HEDLEY_WARN_UNUSED_RESULT constexpr size_t get_alignment() const;
 
+    template<typename Initializer>
+    constexpr void init(Initializer& initializer);
+
     HEDLEY_WARN_UNUSED_RESULT constexpr memory_block allocate(size_t size);
 
     template<typename U = AllocatorT>
@@ -121,9 +124,24 @@ private:
 };
 
 template<typename AllocatorT, typename PrefixT, typename SuffixT>
-[[nodiscard]] constexpr size_t affix_allocator<AllocatorT, PrefixT, SuffixT>::get_alignment() const
+HEDLEY_WARN_UNUSED_RESULT constexpr size_t affix_allocator<AllocatorT, PrefixT, SuffixT>::get_alignment() const
 {
     return alignment;
+}
+
+template<typename AllocatorT, typename PrefixT, typename SuffixT>
+template<typename Initializer>
+constexpr void affix_allocator<AllocatorT, PrefixT, SuffixT>::init(Initializer& initializer)
+{
+    allocator::init(initializer);
+
+    if constexpr (prefix_size > 0)
+        prefix::init(initializer);
+
+    if constexpr (suffix_size > 0)
+        suffix::init(initializer);
+
+    initializer.init(*this);
 }
 
 template<typename AllocatorT, typename PrefixT, typename SuffixT>

@@ -19,6 +19,9 @@ public:
 public:
     HEDLEY_WARN_UNUSED_RESULT constexpr std::size_t get_alignment() const;
 
+    template<typename Initializer>
+    constexpr void init(Initializer& initializer);
+
     HEDLEY_WARN_UNUSED_RESULT constexpr memory_block allocate(std::size_t size);
 
     template<typename U = PrimaryAllocatorT, typename V = FallbackAllocatorT>
@@ -40,6 +43,16 @@ template<typename PrimaryAllocatorT, typename FallbackAllocatorT>
 constexpr std::size_t fallback_allocator<PrimaryAllocatorT, FallbackAllocatorT>::get_alignment() const
 {
     return alignment;
+}
+
+template<typename PrimaryAllocatorT, typename FallbackAllocatorT>
+template<typename Initializer>
+constexpr void fallback_allocator<PrimaryAllocatorT, FallbackAllocatorT>::init(Initializer& initializer)
+{
+    primary::init(initializer);
+    fallback::init(initializer);
+
+    initializer.init(*this);
 }
 
 template<typename PrimaryAllocatorT, typename FallbackAllocatorT>
