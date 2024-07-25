@@ -145,7 +145,7 @@ constexpr bool free_list_allocator<AllocatorT, StrategyT>::reallocate(memory_blo
 
     if (memory_block new_block = allocate(new_size))
     {
-        memcpy(new_block.ptr, block.ptr, block.size);
+        std::memcpy(new_block.ptr, block.ptr, block.size);
 
         deallocate(block);
 

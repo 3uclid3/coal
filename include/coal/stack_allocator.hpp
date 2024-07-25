@@ -37,7 +37,7 @@ private:
 template<std::size_t SizeT, std::size_t AlignmentT>
 constexpr std::size_t stack_allocator<SizeT, AlignmentT>::get_alignment() const
 {
-    return AlignmentT;
+    return alignment;
 }
 
 template<std::size_t SizeT, std::size_t AlignmentT>
@@ -99,7 +99,7 @@ constexpr bool stack_allocator<SizeT, AlignmentT>::reallocate(memory_block& bloc
         return reallocated;
     }
 
-    const std::size_t aligned_new_size = align_up(new_size, AlignmentT);
+    const std::size_t aligned_new_size = align_up(new_size, alignment);
 
     if (is_last_allocated_unaligned_block(block))
     {
@@ -112,7 +112,7 @@ constexpr bool stack_allocator<SizeT, AlignmentT>::reallocate(memory_block& bloc
         return false; // oom
     }
 
-    const std::size_t aligned_size = align_up(block.size, AlignmentT);
+    const std::size_t aligned_size = align_up(block.size, alignment);
 
     if (aligned_size >= aligned_new_size)
     {
@@ -122,7 +122,7 @@ constexpr bool stack_allocator<SizeT, AlignmentT>::reallocate(memory_block& bloc
 
     if (memory_block new_block = allocate(new_size))
     {
-        memcpy(new_block.ptr, block.ptr, block.size);
+        std::memcpy(new_block.ptr, block.ptr, block.size);
         block = new_block;
         return true;
     }
@@ -171,7 +171,7 @@ constexpr void stack_allocator<SizeT, AlignmentT>::deallocate_all()
 template<std::size_t SizeT, std::size_t AlignmentT>
 constexpr bool stack_allocator<SizeT, AlignmentT>::is_last_allocated_unaligned_block(const memory_block& block) const
 {
-    return _ptr == static_cast<const std::uint8_t*>(block.ptr) + align_up(block.size, AlignmentT);
+    return _ptr == static_cast<const std::uint8_t*>(block.ptr) + align_up(block.size, alignment);
 }
 
 } // namespace coal
