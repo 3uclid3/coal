@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstddef>
+
 #include <coal/free_list_allocator.hpp>
 
 namespace coal::free_list_strategy {

@@ -1,5 +1,9 @@
 #pragma once
 
+#include <cstddef>
+
+#include <coal/free_list_allocator.hpp>
+
 namespace coal {
 
 struct free_list;
