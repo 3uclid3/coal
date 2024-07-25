@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <cassert>
 
 #include <coal/free_list_allocator.hpp>
 #include <coal/memory_block.hpp>

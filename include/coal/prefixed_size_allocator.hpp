@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cassert>
+
 #include <coal/affix_allocator.hpp>
 #include <coal/details/allocator_reallocation.hpp>
 #include <coal/memory_block.hpp>
@@ -57,7 +59,7 @@ constexpr const prefixed_size_allocator<AllocatorT>::allocator& prefixed_size_al
 }
 
 template<typename AllocatorT>
-constexpr prefixed_size_allocator<AllocatorT>:: allocator& prefixed_size_allocator<AllocatorT>::get_allocator()
+constexpr prefixed_size_allocator<AllocatorT>::allocator& prefixed_size_allocator<AllocatorT>::get_allocator()
 {
     return super::get_allocator();
 }

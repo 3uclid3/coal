@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <cassert>
 
 #include <coal/allocator_traits.hpp>
 #include <coal/details/allocator_reallocation.hpp>
