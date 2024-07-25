@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <memory>
 #include <type_traits>
 #include <utility>
@@ -134,13 +135,13 @@ constexpr size_t affix_allocator<AllocatorT, PrefixT, SuffixT>::get_alignment() 
 }
 
 template<typename AllocatorT, typename PrefixT, typename SuffixT>
-constexpr const affix_allocator<AllocatorT, PrefixT, SuffixT>::allocator& affix_allocator<AllocatorT, PrefixT, SuffixT>::get_allocator()const
+constexpr const affix_allocator<AllocatorT, PrefixT, SuffixT>::allocator& affix_allocator<AllocatorT, PrefixT, SuffixT>::get_allocator() const
 {
     return _allocator;
 }
 
 template<typename AllocatorT, typename PrefixT, typename SuffixT>
-constexpr affix_allocator<AllocatorT, PrefixT, SuffixT>::allocator& affix_allocator<AllocatorT, PrefixT, SuffixT>::get_allocator() 
+constexpr affix_allocator<AllocatorT, PrefixT, SuffixT>::allocator& affix_allocator<AllocatorT, PrefixT, SuffixT>::get_allocator()
 {
     return _allocator;
 }
