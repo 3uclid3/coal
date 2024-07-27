@@ -16,6 +16,8 @@ class proxy_allocator
 public:
     using allocator = Allocator;
 
+    static constexpr std::size_t alignment = Allocator::alignment;
+
     constexpr proxy_allocator() = default;
 
     [[nodiscard]] constexpr std::size_t get_alignment() const;

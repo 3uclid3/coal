@@ -13,6 +13,8 @@ namespace coal {
 class proxy_interface_allocator
 {
 public:
+    static constexpr std::size_t alignment = default_alignment;
+
     constexpr proxy_interface_allocator() = default;
 
     template<typename AllocatorT>
