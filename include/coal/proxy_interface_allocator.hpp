@@ -4,6 +4,7 @@
 #include <cassert>
 #include <functional>
 
+#include <coal/alignment.hpp>
 #include <coal/allocator_traits.hpp>
 #include <coal/memory_block.hpp>
 #include <coal/null_allocator.hpp>

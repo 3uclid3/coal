@@ -153,12 +153,6 @@ constexpr void affix_allocator<AllocatorT, PrefixT, SuffixT>::init(Initializer& 
 {
     _allocator.init(initializer);
 
-    if constexpr (prefix_size > 0)
-        prefix::init(initializer);
-
-    if constexpr (suffix_size > 0)
-        suffix::init(initializer);
-
     initializer.init(*this);
 }
 
